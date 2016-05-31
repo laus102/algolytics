@@ -11,6 +11,11 @@ import Cocoa
 import Foundation
 import SwiftCSV
 
+protocol FileDraggingProtocol
+{
+   func perfomOperationForDraggedFiles(files: [String])
+}
+
 
 let inputFilePath = try! NSFileManager.defaultManager().URLForDirectory(.DesktopDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true).URLByAppendingPathComponent("algolytics input 5.12").URLByAppendingPathExtension("csv")
 
@@ -26,6 +31,11 @@ class ViewController: NSViewController {
    var inputCSV: CSV?
    var computer: ComputerModel? // all algorythmic computation will be done within this object
    
+   @IBOutlet var draggableView: DraggableView! {
+      didSet {
+         draggableView.draggingDelegate = self
+      }
+   }
    
    
    // MARK: Lifecycle
@@ -33,17 +43,6 @@ class ViewController: NSViewController {
 
    override func viewDidLoad() {
       super.viewDidLoad()
-      
-      // load the CSVs in question
-      do {
-         try inputCSV = CSV(url: inputFilePath, delimiter: ",", encoding: NSUTF8StringEncoding, loadColumns: true)
-         print("success loading .csv file")
-      }
-      catch {
-         print("error in reading from input .csv file")
-      }
-      
-      computer =  ComputerModel(inputCSV: inputCSV!)
    }
 
    override var representedObject: AnyObject? {
@@ -61,7 +60,7 @@ class ViewController: NSViewController {
    //    care of in the outputFilePath
    //***********************************************************************
    func writeResultsToOuputCSV(outputFilePath: NSURL) {
-      let finalCSV = computer?.outputCSV.dataUsingEncoding(NSUTF8StringEncoding)
+      let finalCSV = computer!.generateOuputCSV().dataUsingEncoding(NSUTF8StringEncoding)
       do {
          try finalCSV?.writeToURL(outputFilePath, options: NSDataWritingOptions.DataWritingAtomic)
       }
@@ -76,6 +75,28 @@ class ViewController: NSViewController {
       self.computer!.compute()
       self.writeResultsToOuputCSV(tempOutputFilePath)
       
+   }
+   
+   
+}
+
+extension ViewController: FileDraggingProtocol
+{
+   func perfomOperationForDraggedFiles(files: [String])
+   {
+      // load the CSVs in question
+      guard let filePath = files.first else { return }
+      let url = NSURL(fileURLWithPath: filePath)
+      
+      do {
+         try inputCSV = CSV(url: url, delimiter: ",", encoding: NSUTF8StringEncoding, loadColumns: true)
+         print("success loading .csv file")
+      }
+      catch {
+         print("error in reading from input .csv file")
+      }
+      
+      computer =  ComputerModel(inputCSV: inputCSV!)
    }
 }
 

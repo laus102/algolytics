@@ -669,7 +669,7 @@
         <scene sceneID="hIz-AP-VOD">
             <objects>
                 <viewController id="XfG-lQ-9wD" customClass="ViewController" customModule="Algolytics" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" wantsLayer="YES" id="m2S-Jp-Qdl">
+                    <view key="view" wantsLayer="YES" id="m2S-Jp-Qdl" customClass="DraggableView" customModule="Algolytics" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
@@ -691,6 +691,9 @@
                             <constraint firstAttribute="trailing" secondItem="el5-H8-xaJ" secondAttribute="trailing" constant="187" id="QhA-FT-xyI"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="draggableView" destination="m2S-Jp-Qdl" id="kbC-K5-PYT"/>
+                    </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
