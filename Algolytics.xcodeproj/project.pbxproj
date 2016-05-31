@@ -11,15 +11,25 @@
 		C6861BA21CE4FD5100956E1A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6861BA11CE4FD5100956E1A /* ViewController.swift */; };
 		C6861BA41CE4FD5100956E1A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C6861BA31CE4FD5100956E1A /* Assets.xcassets */; };
 		C6861BA71CE4FD5100956E1A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C6861BA51CE4FD5100956E1A /* Main.storyboard */; };
+		C6861BAF1CE4FE0100956E1A /* ComputerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6861BAE1CE4FE0100956E1A /* ComputerModel.swift */; };
+		C6CBD6F91CE51F95007358CA /* SwiftCSV.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6CBD6F81CE51F95007358CA /* SwiftCSV.framework */; };
+		C6CBD6FB1CE51F9F007358CA /* Pods_Algolytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6CBD6FA1CE51F9F007358CA /* Pods_Algolytics.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2B501E344DE60140FF25D93A /* Pods-Algolytics.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Algolytics.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Algolytics/Pods-Algolytics.debug.xcconfig"; sourceTree = "<group>"; };
+		98D138EA0B38CFA18EE9C2D2 /* Pods_Algolytics.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Algolytics.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6861B9C1CE4FD5100956E1A /* Algolytics.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Algolytics.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6861B9F1CE4FD5100956E1A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C6861BA11CE4FD5100956E1A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		C6861BA31CE4FD5100956E1A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C6861BA61CE4FD5100956E1A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C6861BA81CE4FD5100956E1A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C6861BAE1CE4FE0100956E1A /* ComputerModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComputerModel.swift; sourceTree = "<group>"; };
+		C6A007F01CE51DD70021D99D /* SwiftCSV.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftCSV.framework; path = "Pods/../build/Debug-iphoneos/SwiftCSV/SwiftCSV.framework"; sourceTree = "<group>"; };
+		C6CBD6F81CE51F95007358CA /* SwiftCSV.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftCSV.framework; path = "Pods/../build/Debug-iphoneos/SwiftCSV/SwiftCSV.framework"; sourceTree = "<group>"; };
+		C6CBD6FA1CE51F9F007358CA /* Pods_Algolytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Pods_Algolytics.framework; path = "Pods/../build/Debug-iphoneos/Pods_Algolytics.framework"; sourceTree = "<group>"; };
+		CA6DEE2EB269CA772ED5FFC8 /* Pods-Algolytics.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Algolytics.release.xcconfig"; path = "Pods/Target Support Files/Pods-Algolytics/Pods-Algolytics.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -27,17 +37,32 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C6CBD6FB1CE51F9F007358CA /* Pods_Algolytics.framework in Frameworks */,
+				C6CBD6F91CE51F95007358CA /* SwiftCSV.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0B66529037622C71A138BCE2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C6CBD6FA1CE51F9F007358CA /* Pods_Algolytics.framework */,
+				C6CBD6F81CE51F95007358CA /* SwiftCSV.framework */,
+				C6A007F01CE51DD70021D99D /* SwiftCSV.framework */,
+				98D138EA0B38CFA18EE9C2D2 /* Pods_Algolytics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		C6861B931CE4FD5100956E1A = {
 			isa = PBXGroup;
 			children = (
 				C6861B9E1CE4FD5100956E1A /* Algolytics */,
 				C6861B9D1CE4FD5100956E1A /* Products */,
+				CEA306BE4DBFDB8D4E31D5E3 /* Pods */,
+				0B66529037622C71A138BCE2 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -52,13 +77,47 @@
 		C6861B9E1CE4FD5100956E1A /* Algolytics */ = {
 			isa = PBXGroup;
 			children = (
+				C6F36FB91CE507990092EB19 /* Views */,
 				C6861B9F1CE4FD5100956E1A /* AppDelegate.swift */,
-				C6861BA11CE4FD5100956E1A /* ViewController.swift */,
+				C6861BB11CE4FE1900956E1A /* ViewControllers */,
+				C6861BB01CE4FE0E00956E1A /* Models */,
 				C6861BA31CE4FD5100956E1A /* Assets.xcassets */,
 				C6861BA51CE4FD5100956E1A /* Main.storyboard */,
 				C6861BA81CE4FD5100956E1A /* Info.plist */,
 			);
 			path = Algolytics;
+			sourceTree = "<group>";
+		};
+		C6861BB01CE4FE0E00956E1A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C6861BAE1CE4FE0100956E1A /* ComputerModel.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		C6861BB11CE4FE1900956E1A /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				C6861BA11CE4FD5100956E1A /* ViewController.swift */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		C6F36FB91CE507990092EB19 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		CEA306BE4DBFDB8D4E31D5E3 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				2B501E344DE60140FF25D93A /* Pods-Algolytics.debug.xcconfig */,
+				CA6DEE2EB269CA772ED5FFC8 /* Pods-Algolytics.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -68,9 +127,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C6861BAB1CE4FD5100956E1A /* Build configuration list for PBXNativeTarget "Algolytics" */;
 			buildPhases = (
+				C9DC77D111729B04F18B5EF0 /* 📦 Check Pods Manifest.lock */,
 				C6861B981CE4FD5100956E1A /* Sources */,
 				C6861B991CE4FD5100956E1A /* Frameworks */,
 				C6861B9A1CE4FD5100956E1A /* Resources */,
+				C583F236D46490D828214C7E /* 📦 Embed Pods Frameworks */,
+				B522823AC5EFA2658C9DF3F5 /* 📦 Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -126,11 +188,60 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		B522823AC5EFA2658C9DF3F5 /* 📦 Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Algolytics/Pods-Algolytics-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C583F236D46490D828214C7E /* 📦 Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Algolytics/Pods-Algolytics-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C9DC77D111729B04F18B5EF0 /* 📦 Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		C6861B981CE4FD5100956E1A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C6861BAF1CE4FE0100956E1A /* ComputerModel.swift in Sources */,
 				C6861BA21CE4FD5100956E1A /* ViewController.swift in Sources */,
 				C6861BA01CE4FD5100956E1A /* AppDelegate.swift in Sources */,
 			);
@@ -234,25 +345,44 @@
 		};
 		C6861BAC1CE4FD5100956E1A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2B501E344DE60140FF25D93A /* Pods-Algolytics.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/build/Debug-iphoneos/SwiftCSV",
+					"$(PROJECT_DIR)/build/Debug-iphoneos",
+				);
 				INFOPLIST_FILE = Algolytics/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.incipia.Algolytics;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		C6861BAD1CE4FD5100956E1A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA6DEE2EB269CA772ED5FFC8 /* Pods-Algolytics.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/build/Debug-iphoneos/SwiftCSV",
+					"$(PROJECT_DIR)/build/Debug-iphoneos",
+				);
 				INFOPLIST_FILE = Algolytics/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.incipia.Algolytics;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 			};
 			name = Release;
 		};
@@ -275,6 +405,7 @@
 				C6861BAD1CE4FD5100956E1A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
