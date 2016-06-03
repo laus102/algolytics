@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		C66BCD981CFE274300A90D5E /* DraggableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66BCD971CFE274300A90D5E /* DraggableView.swift */; };
+		C66BCD9A1CFE480700A90D5E /* Statistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66BCD991CFE480700A90D5E /* Statistics.swift */; };
+		C66BCD9C1CFF8EA300A90D5E /* ASOCalculation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66BCD9B1CFF8EA300A90D5E /* ASOCalculation.swift */; };
 		C6861BA01CE4FD5100956E1A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6861B9F1CE4FD5100956E1A /* AppDelegate.swift */; };
 		C6861BA21CE4FD5100956E1A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6861BA11CE4FD5100956E1A /* ViewController.swift */; };
 		C6861BA41CE4FD5100956E1A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C6861BA31CE4FD5100956E1A /* Assets.xcassets */; };
@@ -21,6 +23,8 @@
 		2B501E344DE60140FF25D93A /* Pods-Algolytics.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Algolytics.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Algolytics/Pods-Algolytics.debug.xcconfig"; sourceTree = "<group>"; };
 		98D138EA0B38CFA18EE9C2D2 /* Pods_Algolytics.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Algolytics.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C66BCD971CFE274300A90D5E /* DraggableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DraggableView.swift; sourceTree = "<group>"; };
+		C66BCD991CFE480700A90D5E /* Statistics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Statistics.swift; sourceTree = "<group>"; };
+		C66BCD9B1CFF8EA300A90D5E /* ASOCalculation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASOCalculation.swift; sourceTree = "<group>"; };
 		C6861B9C1CE4FD5100956E1A /* Algolytics.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Algolytics.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6861B9F1CE4FD5100956E1A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C6861BA11CE4FD5100956E1A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -94,6 +98,8 @@
 			isa = PBXGroup;
 			children = (
 				C6861BAE1CE4FE0100956E1A /* ComputerModel.swift */,
+				C66BCD991CFE480700A90D5E /* Statistics.swift */,
+				C66BCD9B1CFF8EA300A90D5E /* ASOCalculation.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -247,6 +253,8 @@
 				C6861BAF1CE4FE0100956E1A /* ComputerModel.swift in Sources */,
 				C6861BA21CE4FD5100956E1A /* ViewController.swift in Sources */,
 				C66BCD981CFE274300A90D5E /* DraggableView.swift in Sources */,
+				C66BCD9C1CFF8EA300A90D5E /* ASOCalculation.swift in Sources */,
+				C66BCD9A1CFE480700A90D5E /* Statistics.swift in Sources */,
 				C6861BA01CE4FD5100956E1A /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

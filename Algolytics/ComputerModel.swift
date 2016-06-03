@@ -9,55 +9,32 @@
 import Foundation
 import SwiftCSV
 
-enum PBCStatistic: String {
-   case Frequency = "Frequency"
-   case Clicks = "Clicks"
-   case Impressions = "Impressions"
-   case Cost = "Cost"
-   case Conversions = "Conversions"
-   
-   static var all: [PBCStatistic] {
-      return [.Frequency, .Clicks, .Impressions, .Cost, .Conversions]
-   }
-}
-
-enum SEOStatistic: String {
-   case Frequency = "Frequency"
-   case Clicks = "Clicks"
-   case Impressions = "Impressions"
-   case Position = "Position"
-   
-   static var all: [SEOStatistic] {
-      return [.Frequency, .Clicks, .Impressions, .Position]
-   }
-}
-
-
 class ComputerModel: NSObject {
    
    let inputCSV: CSV?
    var outputCSV = "Search Term,Frequency,Clicks,Impressions,Cost,Conversions\n"
+   var dataSet: GenericDataSet?
    
-   //                 keyword   statistic   frequency
-   var searchTerms = [String : [PBCStatistic : Double]]()
+   
+   //                 keyword   statistic   (frequency)
+   //var searchTerms = [String : [String : StatisticTuple]]()
+   var searchTerms = [String : [String : Double]]()
+   //var searchTerms = [String : [String : (Bool, Double)]]()
    
    init(inputCSV: CSV!) {
       self.inputCSV = inputCSV
+      self.dataSet = factoryData(inputCSV.header)
    }
-   
    
    // This method computes the output
    //*******************************************************
    func compute() {
-      print("computing...")
       for entry in inputCSV!.rows { // for each row
-         let generatedPhrases = generatePhrases(entry["Search term"]!) // generate all possible phrases
+         let generatedPhrases = dataSet!.generatePhrases(entry["Search term"]!) // generate all possible phrases
          self.updateSearchTerms(generatedPhrases) // update 'searchTerms' array
       }
-      print("\nprinting searchTerms now\n")
-      for each in self.searchTerms {
-            print(each)
-      }
+      
+      //
    }
    
    // searchTerm   statistic   statvalue
@@ -66,8 +43,8 @@ class ComputerModel: NSObject {
    func generateOuputCSV() -> String {
       for searchTerm in searchTerms {
          outputCSV += "\(searchTerm.0),"
-         for stat in PBCStatistic.all {
-            outputCSV += "\(searchTerm.1[stat]!),"
+         for stat in self.dataSet!.stats() {
+            outputCSV += "\(searchTerm.1[ stat]!),"
          }
          outputCSV = String(outputCSV.characters.dropLast()) + "\n"
       }
@@ -97,25 +74,20 @@ class ComputerModel: NSObject {
    
    // updates the searchTerms...
    //*******************************************************
-   func updateSearchTerms(newGeneratedPhrases: [String]) {
-       for newPhrase in newGeneratedPhrases {
-         if (!literalAlreadySeen(newPhrase, searchTerms: self.searchTerms)) { //if this is the first time seeing it
-            self.searchTerms[newPhrase] = [.Frequency : 0.0,
-                                           .Clicks : 0.0,
-                                           .Impressions : 0.0,
-                                           .Cost : 0.0,
-                                           .Conversions : 0.0] // create an entry for it in searchTerms[[]]
-            
-         }
+   func updateSearchTerms(newGeneratedPhrases: [String]) {  // called on each row from .csv... each set of gen. phrases
+       for newPhrase in newGeneratedPhrases {  // NEW PHRASE CAN AND WILL CONTAIN DUPLICATES
+         if (!literalAlreadySeen(newPhrase, searchTerms: self.searchTerms))  //if this is the first time seeing it
+            { self.searchTerms[newPhrase] = self.dataSet!.EmptyStatsDict() } // create an (empty) entry for it in searchTerms[[]]
          updateFrequency(newPhrase)
-         
-         for row in inputCSV!.rows {
-            if (phraseOccursInSearchTerm(newPhrase, searchTerm: row["Search term"]!)) {
-               for each in PBCStatistic.all {
-                  guard let doubleStatValue = rowStatisticValue(row, statistic: each) else {
-                     continue
+       }
+      
+       for term in self.searchTerms {
+         for row in inputCSV!.rows { // go through the original search terms
+            if (phraseOccursInSearchTerm(term.0, searchTerm: row["Search term"]!)) { //if we see our new gen. phrase in the orig.
+               for each in self.dataSet!.stats() {                      // for each of our generated phrase's output statistics
+                  if let doubleStatValue = rowStatisticValue(row, statistic: each) { //if there is a valid value for this stat
+                     updateStatistic(each, phrase: term.0, rowValue: doubleStatValue)
                   }
-                  updateStatistic(each, phrase: newPhrase, rowValue: doubleStatValue)
                }
             }
          }
@@ -126,8 +98,8 @@ class ComputerModel: NSObject {
    // returns the Double value of the specified statistic
    // (SwiftCSV provides the stat as a String, we must convert it)
    //*******************************************************
-   func rowStatisticValue(row: [String : String], statistic: PBCStatistic) -> Double? {
-      guard let stringValue = row[statistic.rawValue] else {
+   func rowStatisticValue(row: [String : String], statistic: String) -> Double? {
+      guard let stringValue = row[statistic] else {
          return nil
       }
       return Double(stringValue)
@@ -136,13 +108,12 @@ class ComputerModel: NSObject {
    
    // returns if we've seen the literal in question yet or not
    //*******************************************************
-   func literalAlreadySeen(literal: String, searchTerms: [String : [PBCStatistic : Double]]) -> Bool {
-      if (searchTerms[literal]?[.Frequency] > 0) {
-         return true
+   func literalAlreadySeen(literal: String, searchTerms: [String : [String : Double]]) -> Bool {
+      if let literalFreq = searchTerms[literal]?["Frequency"] {
+         if literalFreq > 0
+            { return true }
       }
-      else {
-         return false
-      }
+      return false
    }
    
    // lets us know whether or not the given phrase occurs within the given searchTerm
@@ -153,27 +124,22 @@ class ComputerModel: NSObject {
       return false
    }
    
-   
    // updates the frequency of the given phrase
-   // 1) adds unique phrases to 'searchTerms'
-   // 2) updates the frequency for phrases already present in 'searchTerms'
-   // NB : After this, all unique search terms will be present in searchTerms[String : [ String : Double]]
+   // updates the frequency for phrases already present in 'searchTerms'
    //*******************************************************
-   func updateFrequency(phrase: String) -> () {
-      self.searchTerms[phrase]![.Frequency]! += 1.0
-   }
+   func updateFrequency(phrase: String) -> ()
+      { self.searchTerms[phrase]!["Frequency"]! += 1.0 }
    
    
-   //
+   // updates the necessary statistic
    //*******************************************************
-   func updateStatistic(statistic: PBCStatistic, phrase: String, rowValue: Double) -> () {
+   func updateStatistic(statistic: String, phrase: String, rowValue: Double) -> () {
       switch statistic {
-         case .Frequency:   break
-         case .Clicks:      self.searchTerms[phrase]![.Clicks]! += rowValue
-         case .Impressions: self.searchTerms[phrase]![.Impressions]! += rowValue
-         case .Cost:        self.searchTerms[phrase]![.Cost]! += rowValue
-         case .Conversions: self.searchTerms[phrase]![.Conversions]! += rowValue
-      // default: print("Error: No correct Statistic Type Suppied")
+      case "Frequency":    break
+      default:
+         //print("\(phrase)_\(statistic): \(self.searchTerms[phrase]![statistic]!)")
+         self.searchTerms[phrase]![statistic]! += rowValue
+         //print("\(phrase)_\(statistic): \(self.searchTerms[phrase]![statistic]!)")
       }
    }
 }
