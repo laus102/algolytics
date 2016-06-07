@@ -66,7 +66,7 @@
                                         </menuItem>
                                         <menuItem title="Open…" keyEquivalent="o" id="IAo-SY-fd9">
                                             <connections>
-                                                <action selector="openDocument:" target="Ady-hI-5gd" id="bVn-NM-KNZ"/>
+                                                <action selector="openCSVFromFileDidPress:" target="Ady-hI-5gd" id="iko-en-ez1"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Open Recent" id="tXI-mr-wws">
@@ -96,6 +96,12 @@
                                         <menuItem title="Save As…" keyEquivalent="S" id="Bw7-FT-i3A">
                                             <connections>
                                                 <action selector="saveDocumentAs:" target="Ady-hI-5gd" id="mDf-zr-I0C"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Export" id="lFJ-gt-tul">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="exportFile:" target="Ady-hI-5gd" id="GJt-pv-mKB"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Revert to Saved" id="KaW-ft-85H">
@@ -645,7 +651,7 @@
                 <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="Algolytics" customModuleProvider="target"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="0.0"/>
+            <point key="canvasLocation" x="33" y="-91"/>
         </scene>
         <!--Window Controller-->
         <scene sceneID="R2V-B0-nI4">
@@ -663,18 +669,18 @@
                 </windowController>
                 <customObject id="Oky-zY-oP4" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="250"/>
+            <point key="canvasLocation" x="33" y="424"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="hIz-AP-VOD">
             <objects>
                 <viewController id="XfG-lQ-9wD" customClass="ViewController" customModule="Algolytics" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" wantsLayer="YES" id="m2S-Jp-Qdl" customClass="DraggableView" customModule="Algolytics" customModuleProvider="target">
-                        <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                        <rect key="frame" x="0.0" y="0.0" width="491" height="270"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="el5-H8-xaJ">
-                                <rect key="frame" x="182" y="118" width="117" height="32"/>
+                                <rect key="frame" x="182" y="118" width="128" height="32"/>
                                 <buttonCell key="cell" type="push" title="Algolyticize!" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="kXB-nO-lXM">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -683,12 +689,23 @@
                                     <action selector="algolyticizeDidPress:" target="XfG-lQ-9wD" id="yh0-dc-am8"/>
                                 </connections>
                             </button>
+                            <button horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ICe-Xb-YLd">
+                                <rect key="frame" x="314" y="122" width="25" height="25"/>
+                                <buttonCell key="cell" type="help" bezelStyle="helpButton" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ZNq-yt-hUd">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
                         </subviews>
                         <constraints>
+                            <constraint firstAttribute="bottom" secondItem="ICe-Xb-YLd" secondAttribute="bottom" constant="125" id="3EF-J2-N9i"/>
                             <constraint firstItem="el5-H8-xaJ" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="188" id="8tn-vr-82j"/>
                             <constraint firstItem="el5-H8-xaJ" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="124" id="Jry-w4-pY1"/>
                             <constraint firstAttribute="bottom" secondItem="el5-H8-xaJ" secondAttribute="bottom" constant="125" id="N8h-sg-I4k"/>
                             <constraint firstAttribute="trailing" secondItem="el5-H8-xaJ" secondAttribute="trailing" constant="187" id="QhA-FT-xyI"/>
+                            <constraint firstItem="ICe-Xb-YLd" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="124" id="hk9-OI-1HG"/>
+                            <constraint firstAttribute="trailing" secondItem="ICe-Xb-YLd" secondAttribute="trailing" constant="154" id="qJj-fj-xhf"/>
+                            <constraint firstItem="ICe-Xb-YLd" firstAttribute="leading" secondItem="el5-H8-xaJ" secondAttribute="trailing" constant="12" id="uLo-H1-CqY"/>
                         </constraints>
                     </view>
                     <connections>
@@ -697,7 +714,7 @@
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="655"/>
+            <point key="canvasLocation" x="33.5" y="789"/>
         </scene>
     </scenes>
 </document>

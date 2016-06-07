@@ -51,7 +51,41 @@ class ViewController: NSViewController {
       }
    }
    
+   //***********************************************************************
+   func openFile() {
+      let myFileDialog: NSOpenPanel = NSOpenPanel()
+      myFileDialog.runModal()
+      // Get the path to the file chosen in the NSOpenPanel
+      guard let path = myFileDialog.URL?.path else {
+         return
+      }
+      
+      let url = NSURL(fileURLWithPath: path)
+      
+      do {
+         try inputCSV = CSV(url: url, delimiter: ",", encoding: NSUTF8StringEncoding, loadColumns: true)
+         print("success loading .csv file")
+      }
+      catch {
+         print("error in reading from input .csv file")
+      }
+      
+      computer =  ComputerModel(inputCSV: inputCSV!)
+   }
    
+   //***********************************************************************
+   @IBAction func exportFile(sender: AnyObject) {
+      let myFileDialog: NSSavePanel = NSSavePanel()
+      myFileDialog.title = "Export CSV File"
+      myFileDialog.runModal()
+      
+      guard let url = myFileDialog.URL else {
+         return
+      }
+      
+      let exportFilePath = url.URLByAppendingPathExtension("csv")
+      writeResultsToOuputCSV(exportFilePath)
+   }
    
    // MARK: Class Methods
    
@@ -71,9 +105,19 @@ class ViewController: NSViewController {
    
    
    //***********************************************************************
+   @IBAction func helpButtonPressed(sender: AnyObject) {
+      
+   }
+   
+   //***********************************************************************
+   @IBAction func openCSVFromFileDidPress(sender: AnyObject) {
+      self.openFile()
+   }
+   
+   //***********************************************************************
    @IBAction func algolyticizeDidPress(sender: AnyObject) {
       self.computer!.compute()
-      self.writeResultsToOuputCSV(tempOutputFilePath)
+      //self.writeResultsToOuputCSV(tempOutputFilePath)
       
    }
    
@@ -90,7 +134,7 @@ extension ViewController: FileDraggingProtocol
       
       do {
          try inputCSV = CSV(url: url, delimiter: ",", encoding: NSUTF8StringEncoding, loadColumns: true)
-         print("success loading .csv file")
+         //print("success loading .csv file")
       }
       catch {
          print("error in reading from input .csv file")

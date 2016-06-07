@@ -18,7 +18,7 @@ class ComputerModel: NSObject {
    
    //                 keyword   statistic   (frequency)
    //var searchTerms = [String : [String : StatisticTuple]]()
-   var searchTerms = [String : [String : Double]]()
+   var searchTerms = [String : [Statistic : Double]]()
    //var searchTerms = [String : [String : (Bool, Double)]]()
    
    init(inputCSV: CSV!) {
@@ -33,6 +33,11 @@ class ComputerModel: NSObject {
          let generatedPhrases = dataSet!.generatePhrases(entry["Search term"]!) // generate all possible phrases
          self.updateSearchTerms(generatedPhrases) // update 'searchTerms' array
       }
+      self.updateStatistics()
+      /*
+      for each in self.searchTerms {
+         print(each.0)
+      }*/
       
       //
    }
@@ -71,8 +76,13 @@ class ComputerModel: NSObject {
       return newTerms
    }
    
-   
-   // updates the searchTerms...
+   // 1) given a set of a possible combinations of the words in a single row's searchTerm entry
+   // 2) goes through each combination 
+   //      if this particular comb. has already been seen
+   //              1) update the freq (don't add another dict. entry)
+   //      else
+   //              1) add a blank dict. entry
+   //              2) update the freq
    //*******************************************************
    func updateSearchTerms(newGeneratedPhrases: [String]) {  // called on each row from .csv... each set of gen. phrases
        for newPhrase in newGeneratedPhrases {  // NEW PHRASE CAN AND WILL CONTAIN DUPLICATES
@@ -80,8 +90,15 @@ class ComputerModel: NSObject {
             { self.searchTerms[newPhrase] = self.dataSet!.EmptyStatsDict() } // create an (empty) entry for it in searchTerms[[]]
          updateFrequency(newPhrase)
        }
-      
-       for term in self.searchTerms {
+   }
+   
+   // goes through all of the aggregated unqiue phrases
+   // looks in each row of the input CSV
+   //       if this unique phrase exists within the row's searchTerm
+   //                aggregate the appropriate statistic for the dataSet
+   //*******************************************************
+   func updateStatistics() {
+      for term in self.searchTerms {
          for row in inputCSV!.rows { // go through the original search terms
             if (phraseOccursInSearchTerm(term.0, searchTerm: row["Search term"]!)) { //if we see our new gen. phrase in the orig.
                for each in self.dataSet!.stats() {                      // for each of our generated phrase's output statistics
@@ -91,15 +108,15 @@ class ComputerModel: NSObject {
                }
             }
          }
-       }
+      }
    }
    
    
    // returns the Double value of the specified statistic
    // (SwiftCSV provides the stat as a String, we must convert it)
    //*******************************************************
-   func rowStatisticValue(row: [String : String], statistic: String) -> Double? {
-      guard let stringValue = row[statistic] else {
+   func rowStatisticValue(row: [String : String], statistic: Statistic) -> Double? {
+      guard let stringValue = row[statistic.stringValue] else {
          return nil
       }
       return Double(stringValue)
@@ -108,8 +125,8 @@ class ComputerModel: NSObject {
    
    // returns if we've seen the literal in question yet or not
    //*******************************************************
-   func literalAlreadySeen(literal: String, searchTerms: [String : [String : Double]]) -> Bool {
-      if let literalFreq = searchTerms[literal]?["Frequency"] {
+   func literalAlreadySeen(literal: String, searchTerms: [String : [Statistic : Double]]) -> Bool {
+      if let literalFreq = searchTerms[literal]?[.Frequency] {
          if literalFreq > 0
             { return true }
       }
@@ -128,18 +145,16 @@ class ComputerModel: NSObject {
    // updates the frequency for phrases already present in 'searchTerms'
    //*******************************************************
    func updateFrequency(phrase: String) -> ()
-      { self.searchTerms[phrase]!["Frequency"]! += 1.0 }
+      { self.searchTerms[phrase]![.Frequency]! += 1.0 }
    
    
    // updates the necessary statistic
    //*******************************************************
-   func updateStatistic(statistic: String, phrase: String, rowValue: Double) -> () {
+   func updateStatistic(statistic: Statistic, phrase: String, rowValue: Double) -> () {
       switch statistic {
-      case "Frequency":    break
-      default:
-         //print("\(phrase)_\(statistic): \(self.searchTerms[phrase]![statistic]!)")
-         self.searchTerms[phrase]![statistic]! += rowValue
-         //print("\(phrase)_\(statistic): \(self.searchTerms[phrase]![statistic]!)")
+         case .Frequency: break
+         default:
+            self.searchTerms[phrase]![statistic]! += rowValue
       }
    }
 }

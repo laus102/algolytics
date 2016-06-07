@@ -16,15 +16,31 @@ let asoHeader = ["Keywords", "Search Score", "Chance", "Total Apps", "Current Ra
 
 
 //*************************************************************************
+enum Statistic {
+   case Frequency, Clicks, Impressions, Cost, Conversions, SearchScore, Position
+   
+   var stringValue: String {
+      switch self {
+         case .Frequency: return "Frequency"
+         case .Clicks:    return "Clicks"
+         case .Impressions: return "Impressions"
+         case .Cost: return "Cost"
+         case .Conversions: return "Conversions"
+         case .SearchScore: return "Search Score"
+         case .Position: return "Position"
+      }
+   }
+}
+
 protocol GenericDataSet {
-   func stats() -> [String]
-   func EmptyStatsDict() -> [String : Double]
+   func stats() -> [Statistic]
+   func EmptyStatsDict() -> [Statistic : Double]
    func generatePhrases(literal: String)-> [String]
 }
 
 extension GenericDataSet {
-   func EmptyStatsDict() -> [String : Double] {
-      var emptyStatsDict: [String : Double] = [:]
+   func EmptyStatsDict() -> [Statistic : Double] {
+      var emptyStatsDict: [Statistic : Double] = [:]
       for each in self.stats()
       { emptyStatsDict[each] = 0.0 }
       return emptyStatsDict
@@ -49,42 +65,30 @@ extension GenericDataSet {
 
 
 class PBC: GenericDataSet {
-   func stats() -> [String] {
-      return ["Frequency", "Clicks", "Impressions", "Cost", "Conversions"]
+   func stats() -> [Statistic] {
+      return [.Frequency, .Clicks, .Impressions, .Cost, .Conversions]
    }
    
 }
 
 class SEO: GenericDataSet {
-   func stats() -> [String] {
-      return ["Frequency", "Clicks", "Impressions", "Position"]
+   func stats() -> [Statistic] {
+      return [.Frequency, .Clicks, .Impressions, .Position]
    }
 }
 
 class ASOKeywords: GenericDataSet {
-   func stats() -> [String] {
-      return ["Frequency", "Search Score"]
+   func stats() -> [Statistic] {
+      return [.Frequency, .SearchScore]
    }
 }
 
 class ASODescription: GenericDataSet {
-   func stats() -> [String] {
-      return ["Frequency"]
+   func stats() -> [Statistic] {
+      return [.Frequency]
    }
    func generatePhrases(literal: String) -> [String] {
       return generateASODescriptionPhrases(literal)
-   }
-}
-
-class StatisticTuple {
-   var aggregated: Bool?
-   var statValue: Double?
-   
-   func alreadyAggregated () -> Bool {
-      return aggregated!
-   }
-   func value() -> Double {
-      return self.statValue!
    }
 }
 
