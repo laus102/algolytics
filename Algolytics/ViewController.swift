@@ -9,6 +9,7 @@
 
 import Cocoa
 import Foundation
+import AppKit
 import SwiftCSV
 
 protocol FileDraggingProtocol
@@ -29,6 +30,7 @@ let tempOutputFilePath = try! NSFileManager.defaultManager().URLForDirectory(.De
 class ViewController: NSViewController {
   
    var inputCSV: CSV?
+   //var popUp: NSPopover?
    var computer: ComputerModel? // all algorythmic computation will be done within this object
    
    @IBOutlet var draggableView: DraggableView! {
@@ -59,18 +61,19 @@ class ViewController: NSViewController {
       guard let path = myFileDialog.URL?.path else {
          return
       }
-      
+   
       let url = NSURL(fileURLWithPath: path)
-      
+    
       do {
-         try inputCSV = CSV(url: url, delimiter: ",", encoding: NSUTF8StringEncoding, loadColumns: true)
+         try inputCSV = CSV(url: url, delimiter: ",", encoding: NSASCIIStringEncoding, loadColumns: true)
          print("success loading .csv file")
-      }
-      catch {
+      } catch {
          print("error in reading from input .csv file")
-      }
+         return
+        }
       
       computer =  ComputerModel(inputCSV: inputCSV!)
+      //computer!.cleanCSV()
    }
    
    //***********************************************************************
@@ -117,7 +120,7 @@ class ViewController: NSViewController {
    //***********************************************************************
    @IBAction func algolyticizeDidPress(sender: AnyObject) {
       self.computer!.compute()
-      //self.writeResultsToOuputCSV(tempOutputFilePath)
+      
       
    }
    
@@ -138,6 +141,7 @@ extension ViewController: FileDraggingProtocol
       }
       catch {
          print("error in reading from input .csv file")
+         return
       }
       
       computer =  ComputerModel(inputCSV: inputCSV!)

@@ -9,9 +9,17 @@
 import Foundation
 import SwiftCSV
 
+extension String {
+   func containsNoAlphaNumericCharacters() -> Bool {
+      let range = self.rangeOfCharacterFromSet(NSCharacterSet.alphanumericCharacterSet())
+      if let _ = range { return false }
+      return true
+   }
+}
+
 class ComputerModel: NSObject {
    
-   let inputCSV: CSV?
+   var inputCSV: CSV?
    var outputCSV = "Search Term,Frequency,Clicks,Impressions,Cost,Conversions\n"
    var dataSet: GenericDataSet?
    
@@ -26,20 +34,48 @@ class ComputerModel: NSObject {
       self.dataSet = factoryData(inputCSV.header)
    }
    
+   // cleans the input CSV of any junk data
+   //*******************************************************
+   func cleanCSV() {
+      var cleanedText: String = ""
+      let charsToBeRemoved = NSCharacterSet.alphanumericCharacterSet().invertedSet
+      
+      if isASODescription(inputCSV!.header) {
+         for row in inputCSV!.rows {
+            //let literal = row
+            // clean ASO style
+         }
+         
+      }
+      else { // PPC, SEO, or ASOKeywords
+         for row in inputCSV!.rows {
+            let searchTerm: String = row[self.dataSet!.searchTermKey()]!
+            if searchTerm.containsNoAlphaNumericCharacters()
+               { print("non alphanumeric searchTerm: \(searchTerm)")
+                  continue} // if the original term has no AlphNum, we can immediately discard
+            let alphaNumLiteral = searchTerm.componentsSeparatedByCharactersInSet(charsToBeRemoved).joinWithSeparator(" ")
+            cleanedText += alphaNumLiteral + "," // add the cleaned search term
+            
+            let statsArray = self.dataSet!.inputStats()
+            for inputStat in statsArray
+               { cleanedText += row[inputStat.stringValue]! + "," } // add each inputstat's "cellValue,"
+            cleanedText.removeAtIndex(cleanedText.endIndex.predecessor()) //remove the very last comma
+            cleanedText += "\n"
+         }
+      }
+      
+      
+      self.inputCSV! = CSV(string: cleanedText, delimiter: " ", loadColumns: true)
+   }
+   
    // This method computes the output
    //*******************************************************
    func compute() {
       for entry in inputCSV!.rows { // for each row
-         let generatedPhrases = dataSet!.generatePhrases(entry["Search term"]!) // generate all possible phrases
+         let generatedPhrases = dataSet!.generatePhrases(entry[dataSet!.searchTermKey()]!) // generate all possible phrases
          self.updateSearchTerms(generatedPhrases) // update 'searchTerms' array
       }
       self.updateStatistics()
-      /*
-      for each in self.searchTerms {
-         print(each.0)
-      }*/
-      
-      //
    }
    
    // searchTerm   statistic   statvalue
@@ -100,7 +136,7 @@ class ComputerModel: NSObject {
    func updateStatistics() {
       for term in self.searchTerms {
          for row in inputCSV!.rows { // go through the original search terms
-            if (phraseOccursInSearchTerm(term.0, searchTerm: row["Search term"]!)) { //if we see our new gen. phrase in the orig.
+            if (wholePhraseOccursInSearchTerm(term.0, searchTerm: row[self.dataSet!.searchTermKey()]!)) { //if we see our new gen. phrase in the orig.
                for each in self.dataSet!.stats() {                      // for each of our generated phrase's output statistics
                   if let doubleStatValue = rowStatisticValue(row, statistic: each) { //if there is a valid value for this stat
                      updateStatistic(each, phrase: term.0, rowValue: doubleStatValue)
@@ -134,10 +170,26 @@ class ComputerModel: NSObject {
    }
    
    // lets us know whether or not the given phrase occurs within the given searchTerm
+   // *** COUNTS ALL OCCURENCES OF INPUT PHRASE (I.E. CAN BE WITHIN ANOTHER WORD)
+   //     e.x. -->  "PIC" in "PICture" will be counted
    //*******************************************************
    func phraseOccursInSearchTerm(phrase: String, searchTerm: String) -> Bool {
       if (searchTerm.rangeOfString(phrase) != nil)
          { return true }
+      return false
+   }
+   
+   // lets us know whether or not the given phrase occurs within the given searchTerm
+   //  *** ONLY COUNTS WHOLE OCCURENCES OF INPUT PHRASE (I.E. SEPARATED BY WHTIE SPACE)
+   //     e.x. -->  "PIC" in "PICture" will NOT be counted
+   //*******************************************************
+   func wholePhraseOccursInSearchTerm(phrase: String, searchTerm: String) -> Bool {
+      let newString: [String] = searchTerm.componentsSeparatedByString(" ")
+      for each in newString {
+         if each == phrase {
+            return true
+         }
+      }
       return false
    }
    
