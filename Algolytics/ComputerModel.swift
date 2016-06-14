@@ -20,7 +20,7 @@ extension String {
 class ComputerModel: NSObject {
    
    var inputCSV: CSV?
-   var outputCSV = "Search Term,Frequency,Clicks,Impressions,Cost,Conversions\n"
+   var outputCSV = ""
    var dataSet: GenericDataSet?
    
    
@@ -32,6 +32,12 @@ class ComputerModel: NSObject {
    init(inputCSV: CSV!) {
       self.inputCSV = inputCSV
       self.dataSet = factoryData(inputCSV.header)
+      outputCSV += self.dataSet!.searchTermKey() + ","
+      for outputStat in self.dataSet!.stats() {
+         outputCSV += outputStat.stringValue + ","
+      }
+      outputCSV.removeAtIndex(outputCSV.endIndex.predecessor())
+      outputCSV += "\n"
    }
    
    // cleans the input CSV of any junk data
@@ -122,7 +128,7 @@ class ComputerModel: NSObject {
    //*******************************************************
    func updateSearchTerms(newGeneratedPhrases: [String]) {  // called on each row from .csv... each set of gen. phrases
        for newPhrase in newGeneratedPhrases {  // NEW PHRASE CAN AND WILL CONTAIN DUPLICATES
-         if (!literalAlreadySeen(newPhrase, searchTerms: self.searchTerms))  //if this is the first time seeing it
+         if (!literalAlreadySeen(newPhrase))  //if this is the first time seeing it
             { self.searchTerms[newPhrase] = self.dataSet!.EmptyStatsDict() } // create an (empty) entry for it in searchTerms[[]]
          updateFrequency(newPhrase)
        }
@@ -134,6 +140,9 @@ class ComputerModel: NSObject {
    //                aggregate the appropriate statistic for the dataSet
    //*******************************************************
    func updateStatistics() {
+//      for each in self.searchTerms {
+//         print(each.0)
+//      }
       for term in self.searchTerms {
          for row in inputCSV!.rows { // go through the original search terms
             if (wholePhraseOccursInSearchTerm(term.0, searchTerm: row[self.dataSet!.searchTermKey()]!)) { //if we see our new gen. phrase in the orig.
@@ -161,21 +170,11 @@ class ComputerModel: NSObject {
    
    // returns if we've seen the literal in question yet or not
    //*******************************************************
-   func literalAlreadySeen(literal: String, searchTerms: [String : [Statistic : Double]]) -> Bool {
-      if let literalFreq = searchTerms[literal]?[.Frequency] {
+   func literalAlreadySeen(literal: String) -> Bool {
+      if let literalFreq = self.searchTerms[literal]?[.Frequency] {
          if literalFreq > 0
             { return true }
       }
-      return false
-   }
-   
-   // lets us know whether or not the given phrase occurs within the given searchTerm
-   // *** COUNTS ALL OCCURENCES OF INPUT PHRASE (I.E. CAN BE WITHIN ANOTHER WORD)
-   //     e.x. -->  "PIC" in "PICture" will be counted
-   //*******************************************************
-   func phraseOccursInSearchTerm(phrase: String, searchTerm: String) -> Bool {
-      if (searchTerm.rangeOfString(phrase) != nil)
-         { return true }
       return false
    }
    
@@ -184,10 +183,35 @@ class ComputerModel: NSObject {
    //     e.x. -->  "PIC" in "PICture" will NOT be counted
    //*******************************************************
    func wholePhraseOccursInSearchTerm(phrase: String, searchTerm: String) -> Bool {
-      let newString: [String] = searchTerm.componentsSeparatedByString(" ")
-      for each in newString {
-         if each == phrase {
-            return true
+      let separatedSearchTerm: [String] = searchTerm.componentsSeparatedByString(" ")
+      let separatedPhrase: [String] = phrase.componentsSeparatedByString(" ")
+      
+      if separatedPhrase.count > 1 { //phrase is more than one word
+         for i in 0..<separatedSearchTerm.count {
+            var comparisonString = ""
+            let suspensionDifferential = separatedSearchTerm.count - (i + separatedPhrase.count)
+            
+            if (suspensionDifferential >= 0) {
+               var counter = i
+               for _ in separatedPhrase {
+                  comparisonString += separatedSearchTerm[counter] + " "
+                  counter += 1
+               }
+               
+               comparisonString = comparisonString.stringByTrimmingCharactersInSet(
+                  NSCharacterSet.whitespaceAndNewlineCharacterSet())
+               let originalPhrase = phrase.stringByTrimmingCharactersInSet(
+                  NSCharacterSet.whitespaceAndNewlineCharacterSet())
+               if comparisonString == originalPhrase
+                  {return true}
+            }
+         }
+      }
+         
+      else { // phrase is only one word
+         for j in 0..<separatedSearchTerm.count {
+            if separatedSearchTerm[j] == phrase
+            { return true }
          }
       }
       return false
