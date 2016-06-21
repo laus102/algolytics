@@ -9,36 +9,51 @@
 import Foundation
 import SwiftCSV
 
-extension String {
-   func containsNoAlphaNumericCharacters() -> Bool {
-      let range = self.rangeOfCharacterFromSet(NSCharacterSet.alphanumericCharacterSet())
-      if let _ = range { return false }
-      return true
-   }
-}
+
 
 class ComputerModel: NSObject {
    
    var inputCSV: CSV?
    var outputCSV = ""
    var dataSet: GenericDataSet?
+   var statsUpdateCounter = 0
    
    
-   //                 keyword   statistic   (frequency)
-   //var searchTerms = [String : [String : StatisticTuple]]()
+   //                 keyword   statistic  (frequency)
    var searchTerms = [String : [Statistic : Double]]()
-   //var searchTerms = [String : [String : (Bool, Double)]]()
-   
+   var segments = [ [String : [Statistic : Double]] ]() // reduces memory-intensive computation
+                                                        // phrase list is broken into several smaller bits
+                                                        // easier for the CPU to handle...
    init(inputCSV: CSV!) {
       self.inputCSV = inputCSV
       self.dataSet = factoryData(inputCSV.header)
       outputCSV += self.dataSet!.searchTermKey() + ","
-      for outputStat in self.dataSet!.stats() {
+      
+      guard let stats = self.dataSet?.stats() else { return }
+      for outputStat in stats {
          outputCSV += outputStat.stringValue + ","
       }
+      
       outputCSV.removeAtIndex(outputCSV.endIndex.predecessor())
       outputCSV += "\n"
    }
+   
+   
+   
+   // This method computes the output
+   //*******************************************************
+   func compute() {
+      
+      guard let rows = inputCSV?.rows else { return }
+      
+      for entry in rows { // for each row
+         let generatedPhrases = dataSet!.generatePhrases(entry[dataSet!.searchTermKey()]!) // generate all possible phrases
+         self.updateSearchTerms(generatedPhrases) // update 'searchTerms' array .. just AGGs freq and gives an empty stats dict
+      }
+      self.segments = self.splitPhraseList()
+      self.dispatchSegmentUpdates(&self.segments) // concurrently aggregates the asynchronous chunks
+   }
+
    
    // cleans the input CSV of any junk data
    //*******************************************************
@@ -47,12 +62,13 @@ class ComputerModel: NSObject {
       let charsToBeRemoved = NSCharacterSet.alphanumericCharacterSet().invertedSet
       
       if isASODescription(inputCSV!.header) {
-         for row in inputCSV!.rows {
-            //let literal = row
-            // clean ASO style
-         }
+//         for row in inputCSV!.rows {
+//              let literal = row
+//             clean ASO style
+//         }
          
       }
+         
       else { // PPC, SEO, or ASOKeywords
          for row in inputCSV!.rows {
             let searchTerm: String = row[self.dataSet!.searchTermKey()]!
@@ -69,19 +85,7 @@ class ComputerModel: NSObject {
             cleanedText += "\n"
          }
       }
-      
-      
       self.inputCSV! = CSV(string: cleanedText, delimiter: " ", loadColumns: true)
-   }
-   
-   // This method computes the output
-   //*******************************************************
-   func compute() {
-      for entry in inputCSV!.rows { // for each row
-         let generatedPhrases = dataSet!.generatePhrases(entry[dataSet!.searchTermKey()]!) // generate all possible phrases
-         self.updateSearchTerms(generatedPhrases) // update 'searchTerms' array
-      }
-      self.updateStatistics()
    }
    
    // searchTerm   statistic   statvalue
@@ -91,7 +95,7 @@ class ComputerModel: NSObject {
       for searchTerm in searchTerms {
          outputCSV += "\(searchTerm.0),"
          for stat in self.dataSet!.stats() {
-            outputCSV += "\(searchTerm.1[ stat]!),"
+            outputCSV += "\(searchTerm.1[stat]!),"
          }
          outputCSV = String(outputCSV.characters.dropLast()) + "\n"
       }
@@ -134,24 +138,43 @@ class ComputerModel: NSObject {
        }
    }
    
-   // goes through all of the aggregated unqiue phrases
+   // goes through all of the aggregated unique phrases of this particular queue (approx. 1459 values)
    // looks in each row of the input CSV
    //       if this unique phrase exists within the row's searchTerm
    //                aggregate the appropriate statistic for the dataSet
-   //*******************************************************
-   func updateStatistics() {
-//      for each in self.searchTerms {
-//         print(each.0)
-//      }
-      for term in self.searchTerms {
-         for row in inputCSV!.rows { // go through the original search terms
-            if (wholePhraseOccursInSearchTerm(term.0, searchTerm: row[self.dataSet!.searchTermKey()]!)) { //if we see our new gen. phrase in the orig.
-               for each in self.dataSet!.stats() {                      // for each of our generated phrase's output statistics
-                  if let doubleStatValue = rowStatisticValue(row, statistic: each) { //if there is a valid value for this stat
-                     updateStatistic(each, phrase: term.0, rowValue: doubleStatValue)
+   //************************************************************************************************
+   func updateSegmentStatistics(inout segment: [String : [Statistic : Double]], inout rows: [[String: String]]) -> () {
+      
+      guard let searchTermKey = self.dataSet?.searchTermKey() else { return }
+      guard let stats = self.dataSet?.stats() else { return }
+      
+      for var term in segment { // the unique phrase that we're interested in
+         for var row in rows { // the input searchTerm we're analyzing
+            autoreleasepool({ 
+               if (wholePhraseOccursInSearchTerm(&term.0, searchTerm: &row[searchTermKey]!)) {
+                  for var each in stats {
+                     if var doubleStatValue = rowStatisticValue(&row, statistic: &each) { //if there is a valid value for this stat
+                        updateStatistic(&each, phrase: &term.0, rowValue: &doubleStatValue)
+                     }
                   }
+                  //               if term.0 == "buy blue" {
+                  //                  print("searchterm: \(row[self.dataSet!.searchTermKey()]!)")
+                  //                  print("buy blue stats:\n \(self.searchTerms["buy blue"]!)")
+                  //               }
                }
-            }
+            })
+//            if (wholePhraseOccursInSearchTerm(&term.0, searchTerm: &row[searchTermKey]!)) {
+//               for var each in stats {
+//                  if var doubleStatValue = rowStatisticValue(&row, statistic: &each) { //if there is a valid value for this stat
+//                     updateStatistic(&each, phrase: &term.0, rowValue: &doubleStatValue)
+//                  }
+//               }
+////               if term.0 == "buy blue" {
+////                  print("searchterm: \(row[self.dataSet!.searchTermKey()]!)")
+////                  print("buy blue stats:\n \(self.searchTerms["buy blue"]!)")
+////               }
+//            }
+            
          }
       }
    }
@@ -160,7 +183,7 @@ class ComputerModel: NSObject {
    // returns the Double value of the specified statistic
    // (SwiftCSV provides the stat as a String, we must convert it)
    //*******************************************************
-   func rowStatisticValue(row: [String : String], statistic: Statistic) -> Double? {
+   func rowStatisticValue(inout row: [String : String], inout statistic: Statistic) -> Double? {
       guard let stringValue = row[statistic.stringValue] else {
          return nil
       }
@@ -178,45 +201,6 @@ class ComputerModel: NSObject {
       return false
    }
    
-   // lets us know whether or not the given phrase occurs within the given searchTerm
-   //  *** ONLY COUNTS WHOLE OCCURENCES OF INPUT PHRASE (I.E. SEPARATED BY WHTIE SPACE)
-   //     e.x. -->  "PIC" in "PICture" will NOT be counted
-   //*******************************************************
-   func wholePhraseOccursInSearchTerm(phrase: String, searchTerm: String) -> Bool {
-      let separatedSearchTerm: [String] = searchTerm.componentsSeparatedByString(" ")
-      let separatedPhrase: [String] = phrase.componentsSeparatedByString(" ")
-      
-      if separatedPhrase.count > 1 { //phrase is more than one word
-         for i in 0..<separatedSearchTerm.count {
-            var comparisonString = ""
-            let suspensionDifferential = separatedSearchTerm.count - (i + separatedPhrase.count)
-            
-            if (suspensionDifferential >= 0) {
-               var counter = i
-               for _ in separatedPhrase {
-                  comparisonString += separatedSearchTerm[counter] + " "
-                  counter += 1
-               }
-               
-               comparisonString = comparisonString.stringByTrimmingCharactersInSet(
-                  NSCharacterSet.whitespaceAndNewlineCharacterSet())
-               let originalPhrase = phrase.stringByTrimmingCharactersInSet(
-                  NSCharacterSet.whitespaceAndNewlineCharacterSet())
-               if comparisonString == originalPhrase
-                  {return true}
-            }
-         }
-      }
-         
-      else { // phrase is only one word
-         for j in 0..<separatedSearchTerm.count {
-            if separatedSearchTerm[j] == phrase
-            { return true }
-         }
-      }
-      return false
-   }
-   
    // updates the frequency of the given phrase
    // updates the frequency for phrases already present in 'searchTerms'
    //*******************************************************
@@ -226,11 +210,15 @@ class ComputerModel: NSObject {
    
    // updates the necessary statistic
    //*******************************************************
-   func updateStatistic(statistic: Statistic, phrase: String, rowValue: Double) -> () {
+   func updateStatistic(inout statistic: Statistic, inout phrase: String, inout rowValue: Double) -> () {
       switch statistic {
          case .Frequency: break
          default:
-            self.searchTerms[phrase]![statistic]! += rowValue
+            dispatch_barrier_async(updateStatisticQueue) {
+               self.searchTerms[phrase]![statistic]! += rowValue
+               self.statsUpdateCounter += 1
+         }
       }
    }
+   
 }

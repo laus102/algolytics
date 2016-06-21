@@ -696,13 +696,27 @@
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9vE-ht-wXB">
+                                <rect key="frame" x="194" y="151" width="105" height="32"/>
+                                <buttonCell key="cell" type="push" title="QueueTest" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2Pu-7N-m9S">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="queueTestDidPress:" target="XfG-lQ-9wD" id="TDf-RI-mGk"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="ICe-Xb-YLd" secondAttribute="bottom" constant="125" id="3EF-J2-N9i"/>
+                            <constraint firstItem="9vE-ht-wXB" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="200" id="7od-P0-Pec"/>
                             <constraint firstItem="el5-H8-xaJ" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="188" id="8tn-vr-82j"/>
+                            <constraint firstAttribute="trailing" secondItem="9vE-ht-wXB" secondAttribute="trailing" constant="198" id="IBk-r5-BlU"/>
                             <constraint firstItem="el5-H8-xaJ" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="124" id="Jry-w4-pY1"/>
                             <constraint firstAttribute="bottom" secondItem="el5-H8-xaJ" secondAttribute="bottom" constant="125" id="N8h-sg-I4k"/>
                             <constraint firstAttribute="trailing" secondItem="el5-H8-xaJ" secondAttribute="trailing" constant="187" id="QhA-FT-xyI"/>
+                            <constraint firstItem="9vE-ht-wXB" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="91" id="TdQ-0W-rSe"/>
+                            <constraint firstItem="el5-H8-xaJ" firstAttribute="top" secondItem="9vE-ht-wXB" secondAttribute="bottom" constant="12" id="hVg-zr-VAZ"/>
                             <constraint firstItem="ICe-Xb-YLd" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="124" id="hk9-OI-1HG"/>
                             <constraint firstAttribute="trailing" secondItem="ICe-Xb-YLd" secondAttribute="trailing" constant="154" id="qJj-fj-xhf"/>
                             <constraint firstItem="ICe-Xb-YLd" firstAttribute="leading" secondItem="el5-H8-xaJ" secondAttribute="trailing" constant="12" id="uLo-H1-CqY"/>

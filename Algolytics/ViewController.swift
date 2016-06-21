@@ -97,6 +97,7 @@ class ViewController: NSViewController {
    //    care of in the outputFilePath
    //***********************************************************************
    func writeResultsToOuputCSV(outputFilePath: NSURL) {
+      print(computer!.statsUpdateCounter)
       let finalCSV = computer!.generateOuputCSV().dataUsingEncoding(NSUTF8StringEncoding)
       do {
          try finalCSV?.writeToURL(outputFilePath, options: NSDataWritingOptions.DataWritingAtomic)
@@ -119,10 +120,20 @@ class ViewController: NSViewController {
    
    //***********************************************************************
    @IBAction func algolyticizeDidPress(sender: AnyObject) {
-      self.computer!.compute()
+      dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) { 
+         self.computer!.compute()
+      }
+      
+
+   }
+   //***********************************************************************
+   
+   @IBAction func queueTestDidPress(sender: AnyObject) {
       
       
    }
+   
+   
    
    
 }
