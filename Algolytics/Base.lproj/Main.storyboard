@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="11129.15" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11129.15"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -696,34 +696,33 @@
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
-                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9vE-ht-wXB">
-                                <rect key="frame" x="194" y="151" width="105" height="32"/>
-                                <buttonCell key="cell" type="push" title="QueueTest" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2Pu-7N-m9S">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="queueTestDidPress:" target="XfG-lQ-9wD" id="TDf-RI-mGk"/>
-                                </connections>
-                            </button>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="SCc-hF-de5">
+                                <rect key="frame" x="108" y="168" width="277" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" placeholderString="" id="vOO-vJ-796">
+                                    <font key="font" size="14" name=".AppleSystemUIFontItalic"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="ICe-Xb-YLd" secondAttribute="bottom" constant="125" id="3EF-J2-N9i"/>
-                            <constraint firstItem="9vE-ht-wXB" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="200" id="7od-P0-Pec"/>
                             <constraint firstItem="el5-H8-xaJ" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="188" id="8tn-vr-82j"/>
-                            <constraint firstAttribute="trailing" secondItem="9vE-ht-wXB" secondAttribute="trailing" constant="198" id="IBk-r5-BlU"/>
+                            <constraint firstItem="SCc-hF-de5" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="110" id="HVW-I1-Tf2"/>
                             <constraint firstItem="el5-H8-xaJ" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="124" id="Jry-w4-pY1"/>
                             <constraint firstAttribute="bottom" secondItem="el5-H8-xaJ" secondAttribute="bottom" constant="125" id="N8h-sg-I4k"/>
                             <constraint firstAttribute="trailing" secondItem="el5-H8-xaJ" secondAttribute="trailing" constant="187" id="QhA-FT-xyI"/>
-                            <constraint firstItem="9vE-ht-wXB" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="91" id="TdQ-0W-rSe"/>
-                            <constraint firstItem="el5-H8-xaJ" firstAttribute="top" secondItem="9vE-ht-wXB" secondAttribute="bottom" constant="12" id="hVg-zr-VAZ"/>
+                            <constraint firstItem="SCc-hF-de5" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="85" id="VkX-BJ-44i"/>
                             <constraint firstItem="ICe-Xb-YLd" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="124" id="hk9-OI-1HG"/>
+                            <constraint firstAttribute="trailing" secondItem="SCc-hF-de5" secondAttribute="trailing" constant="108" id="ikT-4Z-Jaj"/>
                             <constraint firstAttribute="trailing" secondItem="ICe-Xb-YLd" secondAttribute="trailing" constant="154" id="qJj-fj-xhf"/>
                             <constraint firstItem="ICe-Xb-YLd" firstAttribute="leading" secondItem="el5-H8-xaJ" secondAttribute="trailing" constant="12" id="uLo-H1-CqY"/>
+                            <constraint firstItem="ICe-Xb-YLd" firstAttribute="top" secondItem="SCc-hF-de5" secondAttribute="bottom" constant="22" id="uxB-GN-Vdi"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="draggableView" destination="m2S-Jp-Qdl" id="kbC-K5-PYT"/>
+                        <outlet property="progressField" destination="SCc-hF-de5" id="le5-p4-6xe"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

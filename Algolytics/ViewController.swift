@@ -12,26 +12,15 @@ import Foundation
 import AppKit
 import SwiftCSV
 
-protocol FileDraggingProtocol
-{
+protocol FileDraggingProtocol {
    func perfomOperationForDraggedFiles(files: [String])
 }
 
-
-let inputFilePath = try! NSFileManager.defaultManager().URLForDirectory(.DesktopDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true).URLByAppendingPathComponent("algolytics input 5.12").URLByAppendingPathExtension("csv")
-
-let outputFilePath = try! NSFileManager.defaultManager().URLForDirectory(.DesktopDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true).URLByAppendingPathComponent("algolytics output sample 5.12").URLByAppendingPathExtension("csv")
-
-let tempOutputFilePath = try! NSFileManager.defaultManager().URLForDirectory(.DesktopDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true).URLByAppendingPathComponent("algolytics temp output").URLByAppendingPathExtension("csv")
-
-
-
-
-class ViewController: NSViewController {
+class ViewController: NSViewController, NSUserNotificationCenterDelegate {
   
    var inputCSV: CSV?
-   //var popUp: NSPopover?
    var computer: ComputerModel? // all algorythmic computation will be done within this object
+   var notificationCenter: NSUserNotificationCenter?
    
    @IBOutlet var draggableView: DraggableView! {
       didSet {
@@ -39,41 +28,48 @@ class ViewController: NSViewController {
       }
    }
    
+   @IBOutlet weak var progressField: NSTextField!
    
    // MARK: Lifecycle
    /////////////////////////////////////
 
    override func viewDidLoad() {
       super.viewDidLoad()
+      self.progressField!.editable = false
+      self.progressField!.textColor! = NSColor.blueColor()
+      NSUserNotificationCenter.defaultUserNotificationCenter().delegate = self
    }
-
+   
+   //***********************************************************************
    override var representedObject: AnyObject? {
       didSet {
       // Update the view, if already loaded.
       }
    }
    
-   //***********************************************************************
-   func openFile() {
-      let myFileDialog: NSOpenPanel = NSOpenPanel()
-      myFileDialog.runModal()
-      // Get the path to the file chosen in the NSOpenPanel
-      guard let path = myFileDialog.URL?.path else {
-         return
-      }
+   //**********************************************************************
+   func userNotificationCenter(center: NSUserNotificationCenter,
+                                         shouldPresentNotification notification: NSUserNotification) -> Bool {
+      return true
+   }
    
-      let url = NSURL(fileURLWithPath: path)
-    
-      do {
-         try inputCSV = CSV(url: url, delimiter: ",", encoding: NSASCIIStringEncoding, loadColumns: true)
-         print("success loading .csv file")
-      } catch {
-         print("error in reading from input .csv file")
-         return
-        }
-      
-      computer =  ComputerModel(inputCSV: inputCSV!)
-      //computer!.cleanCSV()
+   //**********************************************************************
+   func display(progress: Progress) {
+      dispatch_async(dispatch_get_main_queue()) {
+         print(progress)
+         self.progressField!.stringValue = progress.displayText
+      }
+   }
+
+   //**********************************************************************
+   func displayDoneNotification() {
+      dispatch_async(dispatch_get_main_queue()) { 
+         let notification = NSUserNotification()
+         notification.title = "Computation Done!"
+         notification.informativeText = "Your Aggregate Data is Ready for Export"
+         notification.soundName = NSUserNotificationDefaultSoundName
+         NSUserNotificationCenter.defaultUserNotificationCenter().deliverNotification(notification)
+      }
    }
    
    //***********************************************************************
@@ -87,8 +83,9 @@ class ViewController: NSViewController {
       }
       
       let exportFilePath = url.URLByAppendingPathExtension("csv")
-      writeResultsToOuputCSV(exportFilePath)
+      writeResultsToOuputCSV(exportFilePath!)
    }
+   
    
    // MARK: Class Methods
    
@@ -110,12 +107,33 @@ class ViewController: NSViewController {
    
    //***********************************************************************
    @IBAction func helpButtonPressed(sender: AnyObject) {
-      
+         // Implement
    }
    
    //***********************************************************************
    @IBAction func openCSVFromFileDidPress(sender: AnyObject) {
-      self.openFile()
+      let myFileDialog: NSOpenPanel = NSOpenPanel()
+      myFileDialog.runModal()
+      // Get the path to the file chosen in the NSOpenPanel
+      guard let path = myFileDialog.URL?.path else {
+         return
+      }
+      
+      let url = NSURL(fileURLWithPath: path)
+      
+      do {
+         display(Progress.Loading)
+         try inputCSV = CSV(url: url, delimiter: ",", encoding: NSASCIIStringEncoding, loadColumns: true)
+         //print("success loading .csv file")
+      } catch {
+         print("ok")
+         //display(Progress.LoadingFailed)
+         return
+      }
+      
+      computer =  ComputerModel(inputCSV: inputCSV!, viewController: self)
+      //computer!.cleanCSV()
+      display(Progress.LoadingComplete)
    }
    
    //***********************************************************************
@@ -123,25 +141,11 @@ class ViewController: NSViewController {
       dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) { 
          self.computer!.compute()
       }
-      
-
    }
-   //***********************************************************************
-   
-   @IBAction func queueTestDidPress(sender: AnyObject) {
-      
-      
-   }
-   
-   
-   
-   
 }
 
-extension ViewController: FileDraggingProtocol
-{
-   func perfomOperationForDraggedFiles(files: [String])
-   {
+extension ViewController: FileDraggingProtocol {
+   func perfomOperationForDraggedFiles(files: [String]) {
       // load the CSVs in question
       guard let filePath = files.first else { return }
       let url = NSURL(fileURLWithPath: filePath)
@@ -151,11 +155,10 @@ extension ViewController: FileDraggingProtocol
          //print("success loading .csv file")
       }
       catch {
-         print("error in reading from input .csv file")
+         //print("error in reading from input .csv file")
          return
       }
-      
-      computer =  ComputerModel(inputCSV: inputCSV!)
+      computer =  ComputerModel(inputCSV: inputCSV!, viewController: self)
    }
 }
 

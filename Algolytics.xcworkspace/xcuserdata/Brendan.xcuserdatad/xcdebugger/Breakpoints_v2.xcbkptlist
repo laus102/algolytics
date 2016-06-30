@@ -21,14 +21,30 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Algolytics/ComputerModel.swift"
-            timestampString = "488237495.961782"
+            filePath = "Algolytics/ComputerExtension.swift"
+            timestampString = "488926837.254353"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "218"
-            endingLineNumber = "218"
-            landmarkName = "updateStatistic(_:phrase:rowValue:)"
-            landmarkType = "5">
+            startingLineNumber = "146"
+            endingLineNumber = "146"
+            landmarkName = "mergeSegments()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Algolytics/ComputerModel.swift"
+            timestampString = "488923895.301077"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "215"
+            endingLineNumber = "215"
+            landmarkName = "updateStatistic(statistic:phrase:rowValue:dict:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
