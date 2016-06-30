@@ -16,19 +16,19 @@ class DraggableView: NSView
    required init?(coder: NSCoder)
    {
       super.init(coder: coder)
-      self.registerForDraggedTypes([NSFilenamesPboardType])
+      self.register(forDraggedTypes: [NSFilenamesPboardType])
    }
    
-   override func draggingEntered(sender: NSDraggingInfo) -> NSDragOperation
+   override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation
    {
-      return .Copy
+      return .copy
    }
    
-   override func performDragOperation(sender: NSDraggingInfo) -> Bool
+   override func performDragOperation(_ sender: NSDraggingInfo) -> Bool
    {
       var performDragOperation = false
       let pasteBoard = sender.draggingPasteboard()
-      if let files = pasteBoard.propertyListForType(NSFilenamesPboardType) as? [String]
+      if let files = pasteBoard.propertyList(forType: NSFilenamesPboardType) as? [String]
       {
          draggingDelegate?.perfomOperationForDraggedFiles(files)
          performDragOperation = true

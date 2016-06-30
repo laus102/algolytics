@@ -11,28 +11,29 @@
 import Foundation
 
 enum Progress {
-   case Loading
-   case LoadingComplete
-   case Generating
-   case Computing
-   case LoadingFailed
-   case Complete
+   case loading
+   case loadingComplete
+   case generating
+   case computing
+   case loadingFailed
+   case complete
    
    var displayText: String {
       switch self {
-      case .Loading: return "File Loading..."
-      case .LoadingComplete: return "File Loading Complete.  Press The Button..."
-      case .Generating: return "Phrases Being Generated..."
-      case .Computing: return "Computation in Progress..."
-      case .LoadingFailed: return "File Loading Failed.  Please Try Again."
-      case .Complete: return ""
+      case .loading: return "File Loading..."
+      case .loadingComplete: return "File Loading Complete.  Press The Button..."
+      case .generating: return "Phrases Being Generated..."
+      case .computing: return "Computation in Progress..."
+      case .loadingFailed: return "File Loading Failed.  Please Try Again."
+      case .complete: return ""
       }
    }
 }
 
 //var updateStatisticQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)
-var backgroundQueue = dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)
-var updateStatisticQueue = dispatch_queue_create("com.inicipia.algolytics.fuck", DISPATCH_QUEUE_CONCURRENT)
+//var backgroundQueue = DispatchQueue.global(Int(UInt64(DispatchQueueAttributes.qosUserInitiated.rawValue)), 0)
+var backgroundQueue = DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes.qosUserInitiated)
+var updateStatisticQueue = DispatchQueue(label: "com.inicipia.algolytics.fuck", attributes: DispatchQueueAttributes.concurrent)
 
 extension ComputerModel {
    
@@ -69,9 +70,9 @@ extension ComputerModel {
 //     e.x. -->  "PIC" in "PICture" will NOT be counted
 //*******************************************************
    
-func wholePhraseOccursInSearchTerm( inout phrase: String, inout searchTerm: String) -> Bool {
-   let separatedSearchTerm: [String] = searchTerm.characters.split(" ").map { String($0) } //searchTerm.componentsSeparatedByString(" ")
-   let separatedPhrase: [String] = phrase.characters.split(" ").map { String($0) }// phrase.componentsSeparatedByString(" ")
+func wholePhraseOccursInSearchTerm( _ phrase: inout String, searchTerm: inout String) -> Bool {
+   let separatedSearchTerm: [String] = searchTerm.characters.split(separator: " ").map { String($0) } //searchTerm.componentsSeparatedByString(" ")
+   let separatedPhrase: [String] = phrase.characters.split(separator: " ").map { String($0) }// phrase.componentsSeparatedByString(" ")
    
    let separatedPhraseCount = separatedPhrase.count
    let separatedSearchTermCount = separatedSearchTerm.count
@@ -109,34 +110,29 @@ func wholePhraseOccursInSearchTerm( inout phrase: String, inout searchTerm: Stri
    
    
    //*************************************************************************
-   func dispatchSegmentUpdates(inout segments: [ [String : [Statistic : Double]] ]) {
+   func dispatchSegmentUpdates(_ segments: inout [ [String : [Statistic : Double]] ]) {
       //let computationQueue = dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)
       guard var rows = inputCSV?.rows else { return }
-      parentVC!.display(Progress.Computing)
-      let computationGroup = dispatch_group_create()
+      parentVC!.display(Progress.computing)
+      let computationGroup = DispatchGroup()
          for each in segments { // slice by slice of the original searchTerms array
-            //print("\(each)\n")
             var emptyDict = [String : [Statistic : Double]]()
-            segmentsSearchTerms.append(emptyDict)
+            //segmentsSearchTerms.append(emptyDict)
             print("entering group")
-            dispatch_group_enter(computationGroup)
+            computationGroup.enter()
             var this = each
-            dispatch_async(backgroundQueue, {
+            backgroundQueue.async(execute: {
                self.updateSegmentStatistics(&this, rows: &rows, dict: &emptyDict) // update stats for this row
+               self.segmentsSearchTerms.append(emptyDict)
                print("leaving group")
-               dispatch_group_leave(computationGroup)
+               computationGroup.leave()
             })
          }
       
-      dispatch_group_notify(computationGroup, updateStatisticQueue) {
-         for dictionary in self.segmentsSearchTerms {
-            print(dictionary)
-            print("\n\n")
-         }
-         
+      computationGroup.notify(queue: updateStatisticQueue) {
          self.mergeSegments()
          self.parentVC!.displayDoneNotification()
-         self.parentVC!.display(Progress.Complete)
+         self.parentVC!.display(Progress.complete)
       }
    }
    
@@ -145,15 +141,25 @@ func wholePhraseOccursInSearchTerm( inout phrase: String, inout searchTerm: Stri
    func mergeSegments() {
       print("merging")
       let stats = dataSet!.stats()
-      for statsDict in segmentsSearchTerms { // unique segment's stat list
-         for searchTerm in statsDict {       // each term in the segment
+      for segment in segmentsSearchTerms { // unique segment's stat list
+         var segmentCounter = 0
+         for searchTerm in segment {       // each term in the segment
             for statistic in stats { // each statistic for the appropriate dataset
-               if (statistic == Statistic.Frequency)
+               if (statistic == Statistic.frequency)
                   { continue }
-               let statValue = statsDict[searchTerm.0]![statistic]!
-               searchTerms[searchTerm.0]![statistic] = statValue
+               if let statValue = segment[searchTerm.key]?[statistic] {
+                  searchTerms[searchTerm.key]![statistic] = statValue
+               } else {
+                  print("statistic: \(statistic)")
+                  print("searchTerm: \(searchTerm.key)")
+                  print("segment[searchTerm.key]: \(segment[searchTerm.key])")
+                  print("segmentCounter: \(segmentCounter)\n\n")
+                  for each in segment {
+                     print(each.)
+                  }
+               }
             }
-            
+            segmentCounter += 1
          }
       }
    }

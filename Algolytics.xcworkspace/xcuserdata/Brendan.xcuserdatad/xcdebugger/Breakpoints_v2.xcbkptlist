@@ -21,13 +21,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Algolytics/ComputerExtension.swift"
-            timestampString = "488926837.254353"
+            filePath = "Algolytics/ComputerModel.swift"
+            timestampString = "489016124.094973"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "146"
-            endingLineNumber = "146"
-            landmarkName = "mergeSegments()"
+            startingLineNumber = "218"
+            endingLineNumber = "218"
+            landmarkName = "updateStatistic(_:phrase:rowValue:dict:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -37,13 +37,61 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Algolytics/ComputerModel.swift"
-            timestampString = "488923895.301077"
+            filePath = "Algolytics/ViewController.swift"
+            timestampString = "489009631.054382"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "215"
-            endingLineNumber = "215"
-            landmarkName = "updateStatistic(statistic:phrase:rowValue:dict:)"
+            startingLineNumber = "142"
+            endingLineNumber = "142"
+            landmarkName = "algolyticizeDidPress(_:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Algolytics.ViewController.algolyticizeDidPress (Swift.AnyObject) -&gt; ()"
+                  moduleName = "Algolytics"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Brendan/Documents/Programming/OSX/Algolytics/Algolytics/Algolytics/ViewController.swift"
+                  timestampString = "489016049.944686"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "142"
+                  endingLineNumber = "142"
+                  offsetFromSymbolStart = "19">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Algolytics.ViewController.(algolyticizeDidPress (Swift.AnyObject) -&gt; ()).(closure #1)"
+                  moduleName = "Algolytics"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Brendan/Documents/Programming/OSX/Algolytics/Algolytics/Algolytics/ViewController.swift"
+                  timestampString = "489016049.946792"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "143"
+                  endingLineNumber = "143"
+                  offsetFromSymbolStart = "19">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Algolytics/ComputerModel.swift"
+            timestampString = "489009783.901877"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "31"
+            endingLineNumber = "31"
+            landmarkName = "init(inputCSV:viewController:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

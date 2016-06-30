@@ -13,7 +13,7 @@ import AppKit
 import SwiftCSV
 
 protocol FileDraggingProtocol {
-   func perfomOperationForDraggedFiles(files: [String])
+   func perfomOperationForDraggedFiles(_ files: [String])
 }
 
 class ViewController: NSViewController, NSUserNotificationCenterDelegate {
@@ -35,9 +35,9 @@ class ViewController: NSViewController, NSUserNotificationCenterDelegate {
 
    override func viewDidLoad() {
       super.viewDidLoad()
-      self.progressField!.editable = false
-      self.progressField!.textColor! = NSColor.blueColor()
-      NSUserNotificationCenter.defaultUserNotificationCenter().delegate = self
+      self.progressField!.isEditable = false
+      self.progressField!.textColor! = NSColor.blue()
+      NSUserNotificationCenter.default().delegate = self
    }
    
    //***********************************************************************
@@ -48,14 +48,14 @@ class ViewController: NSViewController, NSUserNotificationCenterDelegate {
    }
    
    //**********************************************************************
-   func userNotificationCenter(center: NSUserNotificationCenter,
-                                         shouldPresentNotification notification: NSUserNotification) -> Bool {
+   func userNotificationCenter(_ center: NSUserNotificationCenter,
+                                         shouldPresent notification: NSUserNotification) -> Bool {
       return true
    }
    
    //**********************************************************************
-   func display(progress: Progress) {
-      dispatch_async(dispatch_get_main_queue()) {
+   func display(_ progress: Progress) {
+      DispatchQueue.main.async {
          print(progress)
          self.progressField!.stringValue = progress.displayText
       }
@@ -63,27 +63,27 @@ class ViewController: NSViewController, NSUserNotificationCenterDelegate {
 
    //**********************************************************************
    func displayDoneNotification() {
-      dispatch_async(dispatch_get_main_queue()) { 
+      DispatchQueue.main.async { 
          let notification = NSUserNotification()
          notification.title = "Computation Done!"
          notification.informativeText = "Your Aggregate Data is Ready for Export"
          notification.soundName = NSUserNotificationDefaultSoundName
-         NSUserNotificationCenter.defaultUserNotificationCenter().deliverNotification(notification)
+         NSUserNotificationCenter.default().deliver(notification)
       }
    }
    
    //***********************************************************************
-   @IBAction func exportFile(sender: AnyObject) {
+   @IBAction func exportFile(_ sender: AnyObject) {
       let myFileDialog: NSSavePanel = NSSavePanel()
       myFileDialog.title = "Export CSV File"
       myFileDialog.runModal()
       
-      guard let url = myFileDialog.URL else {
+      guard let url = myFileDialog.url else {
          return
       }
       
-      let exportFilePath = url.URLByAppendingPathExtension("csv")
-      writeResultsToOuputCSV(exportFilePath!)
+      let exportFilePath = try! url.appendingPathExtension("csv")
+      writeResultsToOuputCSV(exportFilePath)
    }
    
    
@@ -93,11 +93,11 @@ class ViewController: NSViewController, NSUserNotificationCenterDelegate {
    // here we don't have to worry about the .csv extension...that is taken
    //    care of in the outputFilePath
    //***********************************************************************
-   func writeResultsToOuputCSV(outputFilePath: NSURL) {
+   func writeResultsToOuputCSV(_ outputFilePath: URL) {
       print(computer!.statsUpdateCounter)
-      let finalCSV = computer!.generateOuputCSV().dataUsingEncoding(NSUTF8StringEncoding)
+      let finalCSV = computer!.generateOuputCSV().data(using: String.Encoding.utf8)
       do {
-         try finalCSV?.writeToURL(outputFilePath, options: NSDataWritingOptions.DataWritingAtomic)
+         try finalCSV?.write(to: outputFilePath, options: NSData.WritingOptions.dataWritingAtomic)
       }
       catch {
          print("error in writing to .csv file")
@@ -106,52 +106,53 @@ class ViewController: NSViewController, NSUserNotificationCenterDelegate {
    
    
    //***********************************************************************
-   @IBAction func helpButtonPressed(sender: AnyObject) {
+   @IBAction func helpButtonPressed(_ sender: AnyObject) {
          // Implement
    }
    
    //***********************************************************************
-   @IBAction func openCSVFromFileDidPress(sender: AnyObject) {
+   @IBAction func openCSVFromFileDidPress(_ sender: AnyObject) {
       let myFileDialog: NSOpenPanel = NSOpenPanel()
       myFileDialog.runModal()
       // Get the path to the file chosen in the NSOpenPanel
-      guard let path = myFileDialog.URL?.path else {
+      guard let path = myFileDialog.url?.path else {
          return
       }
       
-      let url = NSURL(fileURLWithPath: path)
+      let url = URL(fileURLWithPath: path)
       
       do {
-         display(Progress.Loading)
-         try inputCSV = CSV(url: url, delimiter: ",", encoding: NSASCIIStringEncoding, loadColumns: true)
+         display(Progress.loading)
+         let contents = try String(contentsOf: url, encoding: String.Encoding.ascii)
+         inputCSV = CSV(string: contents, loadColumns: true)
          //print("success loading .csv file")
       } catch {
-         print("ok")
-         //display(Progress.LoadingFailed)
+         print("error")
+         display(Progress.loadingFailed)
          return
       }
       
       computer =  ComputerModel(inputCSV: inputCSV!, viewController: self)
       //computer!.cleanCSV()
-      display(Progress.LoadingComplete)
+      display(Progress.loadingComplete)
    }
    
    //***********************************************************************
-   @IBAction func algolyticizeDidPress(sender: AnyObject) {
-      dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) { 
+   @IBAction func algolyticizeDidPress(_ sender: AnyObject) {
+      DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes(rawValue: UInt64(Int(UInt64(DispatchQueueAttributes.qosDefault.rawValue))))).async {
          self.computer!.compute()
       }
-   }
+   }                    
 }
 
 extension ViewController: FileDraggingProtocol {
-   func perfomOperationForDraggedFiles(files: [String]) {
+   func perfomOperationForDraggedFiles(_ files: [String]) {
       // load the CSVs in question
       guard let filePath = files.first else { return }
-      let url = NSURL(fileURLWithPath: filePath)
+      let url = URL(fileURLWithPath: filePath)
       
       do {
-         try inputCSV = CSV(url: url, delimiter: ",", encoding: NSUTF8StringEncoding, loadColumns: true)
+         try inputCSV = CSV(url: url, delimiter: ",", encoding: String.Encoding.utf8, loadColumns: true)
          //print("success loading .csv file")
       }
       catch {

@@ -38,7 +38,7 @@ class ComputerModel: NSObject {
          outputCSV += outputStat.stringValue + ","
       }
       
-      outputCSV.removeAtIndex(outputCSV.endIndex.predecessor())
+      outputCSV.remove(at: outputCSV.index(before: outputCSV.endIndex))
       outputCSV += "\n"
    }
    
@@ -48,13 +48,18 @@ class ComputerModel: NSObject {
    //*******************************************************
    func compute() {
       guard let rows = inputCSV?.rows else { return }
-      parentVC!.display(Progress.Generating)
+      parentVC!.display(Progress.generating)
       for entry in rows { // for each row
          let generatedPhrases = dataSet!.generatePhrases(entry[dataSet!.searchTermKey()]!) // generate all possible phrases
          updateSearchTerms(generatedPhrases) // update 'searchTerms' array .. just AGGs freq and gives an empty stats dict
       }
       
       var segments = splitPhraseList()
+//      for segment in segments {
+//         for term in segment {
+//            print(term.key)
+//         }
+//      }
       dispatchSegmentUpdates(&segments) // concurrently aggregates the asynchronous chunks
    }
 
@@ -63,7 +68,7 @@ class ComputerModel: NSObject {
    //*******************************************************
    func cleanCSV() {
       var cleanedText: String = ""
-      let charsToBeRemoved = NSCharacterSet.alphanumericCharacterSet().invertedSet
+      let charsToBeRemoved = CharacterSet.alphanumerics.inverted
       
       if isASODescription(inputCSV!.header) {
 //         for row in inputCSV!.rows {
@@ -79,13 +84,13 @@ class ComputerModel: NSObject {
             if searchTerm.containsNoAlphaNumericCharacters()
                { print("non alphanumeric searchTerm: \(searchTerm)")
                   continue} // if the original term has no AlphNum, we can immediately discard
-            let alphaNumLiteral = searchTerm.componentsSeparatedByCharactersInSet(charsToBeRemoved).joinWithSeparator(" ")
+            let alphaNumLiteral = searchTerm.components(separatedBy: charsToBeRemoved).joined(separator: " ")
             cleanedText += alphaNumLiteral + "," // add the cleaned search term
             
             let statsArray = dataSet!.inputStats()
             for inputStat in statsArray
                { cleanedText += row[inputStat.stringValue]! + "," } // add each inputstat's "cellValue,"
-            cleanedText.removeAtIndex(cleanedText.endIndex.predecessor()) //remove the very last comma
+            cleanedText.remove(at: cleanedText.index(before: cleanedText.endIndex)) //remove the very last comma
             cleanedText += "\n"
          }
       }
@@ -97,9 +102,9 @@ class ComputerModel: NSObject {
    //*******************************************************
    func generateOuputCSV() -> String {
       for searchTerm in searchTerms {
-         outputCSV += "\(searchTerm.0),"
+         outputCSV += "\(searchTerm.key),"
          for stat in dataSet!.stats() {
-            outputCSV += "\(searchTerm.1[stat]!),"
+            outputCSV += "\(searchTerm.value[stat]!),"
          }
          outputCSV = String(outputCSV.characters.dropLast()) + "\n"
       }
@@ -110,16 +115,16 @@ class ComputerModel: NSObject {
    // returns an array of all possible ordered combinations of words
    // ..in the given literal
    //*******************************************************
-   func generatePhrases(literal: String) -> [String] {
-      let phrase = literal.componentsSeparatedByString(" ")
+   func generatePhrases(_ literal: String) -> [String] {
+      let phrase = literal.components(separatedBy: " ")
       var newTerms: [String] = []
       var tempString = ""
       
       for i in 0 ..< phrase.count { // for each word "i" in original literal "phrase"
          for j in i ..< phrase.count { // start at word "i" and increment through the remaining words
             tempString += "\(phrase[j]) "       // at each iteration, add the new word "j" to the temp string
-            newTerms.append(tempString.stringByTrimmingCharactersInSet(
-               NSCharacterSet.whitespaceAndNewlineCharacterSet()))   // add this new permutation to the array of generated phrases
+            newTerms.append(tempString.trimmingCharacters(
+               in: CharacterSet.whitespacesAndNewlines))  // add this new permutation to the array of generated phrases
          }
          tempString = "" // reset the temp String after generating terms for each iteration of word "i"
       }
@@ -134,7 +139,7 @@ class ComputerModel: NSObject {
    //              1) add a blank dict. entry
    //              2) update the freq
    //*******************************************************
-   func updateSearchTerms(newGeneratedPhrases: [String]) {  // called on each row from .csv... each set of gen. phrases
+   func updateSearchTerms(_ newGeneratedPhrases: [String]) {  // called on each row from .csv... each set of gen. phrases
        for newPhrase in newGeneratedPhrases {  // NEW PHRASE CAN AND WILL CONTAIN DUPLICATES
          if (!literalAlreadySeen(newPhrase))  //if this is the first time seeing it
             { searchTerms[newPhrase] = dataSet!.EmptyStatsDict() } // create an (empty) entry for it in searchTerms[[]]
@@ -147,30 +152,28 @@ class ComputerModel: NSObject {
    //       if this unique phrase exists within the row's searchTerm
    //                aggregate the appropriate statistic for the dataSet
    //************************************************************************************************
-   func updateSegmentStatistics( inout segment: [String : [Statistic : Double]], inout rows: [[String: String]], inout dict: [String : [Statistic : Double]]) -> () {
+   func updateSegmentStatistics( _ segment: inout [String : [Statistic : Double]], rows: inout [[String: String]], dict: inout [String : [Statistic : Double]]) -> () {
       guard let searchTermKey = dataSet?.searchTermKey() else { return }
       guard let stats = dataSet?.stats() else { return }
       
       for var term in segment { // the unique phrase that we're interested in
          for var row in rows { // the input searchTerm we're analyzing
             autoreleasepool({
-               if (wholePhraseOccursInSearchTerm(&term.0, searchTerm: &row[searchTermKey]!)) {
-                  if let _ = dict[term.0] { // dictionary exists for this unique phrase
-                     print("dictionary exists: \(dict[term.0])")
+               if (wholePhraseOccursInSearchTerm(&term.key, searchTerm: &row[searchTermKey]!)) {
+                  if let _ = dict[term.key] { // dictionary exists for this unique phrase
                      for var each in stats {
                         if var doubleStatValue = rowStatisticValue(&row, statistic: &each) { //if there is a valid value for this stat
-                           updateStatistic(&each, phrase: &term.0, rowValue: &doubleStatValue, dict: &dict)
+                           updateStatistic(&each, phrase: &term.key, rowValue: &doubleStatValue, dict: &dict)
                         }
                      }
                   }
                   else { // dictionary does not yet exist
-                     print("dict does not exist")
+
                      var emptyDict = [Statistic : Double]() // create new dictionary
                      for var each in stats {
                         emptyDict[each] = rowStatisticValue(&row, statistic: &each) // copy the stats
                      }
-                     dict[term.0] = emptyDict
-                     print("new dict: \(emptyDict)")
+                     dict[term.key] = emptyDict
                   }
                }
             })
@@ -182,7 +185,7 @@ class ComputerModel: NSObject {
    // returns the Double value of the specified statistic
    // (SwiftCSV provides the stat as a String, we must convert it)
    //*******************************************************
-   func rowStatisticValue( inout row: [String : String], inout statistic: Statistic) -> Double? {
+   func rowStatisticValue( _ row: inout [String : String], statistic: inout Statistic) -> Double? {
       guard let stringValue = row[statistic.stringValue] else {
          return nil
       }
@@ -192,8 +195,8 @@ class ComputerModel: NSObject {
    
    // returns if we've seen the literal in question yet or not
    //*******************************************************
-   func literalAlreadySeen(literal: String) -> Bool {
-      if let literalFreq = searchTerms[literal]?[.Frequency] {
+   func literalAlreadySeen(_ literal: String) -> Bool {
+      if let literalFreq = searchTerms[literal]?[.frequency] {
          if literalFreq > 0
             { return true }
       }
@@ -203,16 +206,16 @@ class ComputerModel: NSObject {
    // updates the frequency of the given phrase
    // updates the frequency for phrases already present in 'searchTerms'
    //*******************************************************
-   func updateFrequency(phrase: String) -> ()
-      { searchTerms[phrase]![.Frequency]! += 1.0 }
+   func updateFrequency(_ phrase: String) -> ()
+      { searchTerms[phrase]![.frequency]! += 1.0 }
    
    
    // updates the necessary statistic
    //*******************************************************
-   func updateStatistic(inout statistic: Statistic, inout phrase: String, inout rowValue: Double,
-                         inout dict: [String : [Statistic : Double]]) -> () {
+   func updateStatistic(_ statistic: inout Statistic, phrase: inout String, rowValue: inout Double,
+                         dict: inout [String : [Statistic : Double]]) -> () {
       switch statistic {
-         case .Frequency: break
+         case .frequency: break
          default:
                dict[phrase]![statistic]! += rowValue
                self.statsUpdateCounter += 1
