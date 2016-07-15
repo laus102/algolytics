@@ -124,7 +124,6 @@ class ViewController: NSViewController, NSUserNotificationCenterDelegate {
       do {
          display(Progress.loading)
          let contents = try String(contentsOf: url, encoding: String.Encoding.ascii)
-   
          inputCSV = CSV(string: contents, loadColumns: true)
          //print("success loading .csv file")
       } catch {
