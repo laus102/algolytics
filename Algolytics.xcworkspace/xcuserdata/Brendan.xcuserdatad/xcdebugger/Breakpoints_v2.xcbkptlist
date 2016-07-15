@@ -22,11 +22,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Algolytics/ComputerModel.swift"
-            timestampString = "490304521.101468"
+            timestampString = "490313661.214356"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "235"
-            endingLineNumber = "235"
+            startingLineNumber = "200"
+            endingLineNumber = "200"
             landmarkName = "updateStatistic(_:phrase:rowValue:dict:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -86,11 +86,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Algolytics/ASOCalculation.swift"
-            timestampString = "490304506.212624"
+            timestampString = "490309800.891168"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "66"
-            endingLineNumber = "66"
+            startingLineNumber = "71"
+            endingLineNumber = "71"
             landmarkName = "csvEncoder()"
             landmarkType = "7">
          </BreakpointContent>
@@ -108,22 +108,6 @@
             startingLineNumber = "36"
             endingLineNumber = "36"
             landmarkName = "init(string:delimiter:loadColumns:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Algolytics/ComputerModel.swift"
-            timestampString = "490305280.298955"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "51"
-            endingLineNumber = "51"
-            landmarkName = "init(inputCSV:viewController:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -47,15 +47,6 @@ class ComputerModel: NSObject {
          if (isASODescription(inCSV.header)) {
             asoDescriptionObject = ASODescriptionObject(inputCSV: inputCSV)
             asoDescriptionObject?.cleanASODescription()
-            
-            asoDescriptionObject?.printDescriptions()
-            let newCSV = asoDescriptionObject!.csvEncoder()
-            self.inputCSV = asoDescriptionObject!.csvEncoder()
-         
-            print("Printing new csv rows")
-            for row in inputCSV!.rows {
-               print("\(row[dataSet!.searchTermKey()])")
-            }
          }
       }
    }
@@ -64,55 +55,29 @@ class ComputerModel: NSObject {
    // This method computes the output
    //*******************************************************
    func compute() {
-      guard let rows = inputCSV?.rows else { return }
       parentVC!.display(Progress.generating)
+      let isASODescription = self.dataSet?.searchTermKey() == "Description"
+      
+      if isASODescription { // if we are dealing with ASO Description
+         guard let descriptions = asoDescriptionObject?.descriptions else { return }
+         for description in descriptions {
+            let generatedPhrases = dataSet!.generatePhrases(description)
+            updateSearchTerms(generatedPhrases)
+         }
+         parentVC!.display(Progress.complete)
+         return // if ASO Description Dataset, we are done here, as we only need frequency data
+      }
+      
+      guard let rows = inputCSV?.rows else { return }
       for entry in rows { // for each row
          let generatedPhrases = dataSet!.generatePhrases(entry[dataSet!.searchTermKey()]!) // generate all possible phrases
          updateSearchTerms(generatedPhrases) // update 'searchTerms' array .. just AGGs freq and gives an empty stats dict
       }
-      
       var segments = splitPhraseList()
-//      for segment in segments {
-//         for term in segment {
-//            print(term.key)
-//         }
-//      }
-      dispatchSegmentUpdates(&segments) // concurrently aggregates the asynchronous chunks
+      dispatchSegmentUpdates(&segments)
+      // concurrently aggregates the asynchronous chunks
    }
 
-   
-   // cleans the input CSV of any junk data
-   //*******************************************************
-//   func cleanCSV() {
-//      var cleanedText: String = ""
-//      let charsToBeRemoved = CharacterSet.alphanumerics.inverted
-//      
-//      if isASODescription(inputCSV!.header) {
-////         for row in inputCSV!.rows {
-////              let literal = row
-////             clean ASO style
-////         }
-//         
-//      }
-//         
-//      else { // PPC, SEO, or ASOKeywords
-//         for row in inputCSV!.rows {
-//            let searchTerm: String = row[dataSet!.searchTermKey()]!
-//            if searchTerm.containsNoAlphaNumericCharacters()
-//               { print("non alphanumeric searchTerm: \(searchTerm)")
-//                  continue} // if the original term has no AlphNum, we can immediately discard
-//            let alphaNumLiteral = searchTerm.components(separatedBy: charsToBeRemoved).joined(separator: " ")
-//            cleanedText += alphaNumLiteral + "," // add the cleaned search term
-//            
-//            let statsArray = dataSet!.inputStats()
-//            for inputStat in statsArray
-//               { cleanedText += row[inputStat.stringValue]! + "," } // add each inputstat's "cellValue,"
-//            cleanedText.remove(at: cleanedText.index(before: cleanedText.endIndex)) //remove the very last comma
-//            cleanedText += "\n"
-//         }
-//      }
-//      inputCSV! = CSV(string: cleanedText, delimiter: " ", loadColumns: true)
-//   }
    
    // searchTerm   statistic   statvalue
    // searchTerms ... [String : [Statistic : Double]]

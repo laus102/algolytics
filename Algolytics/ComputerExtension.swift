@@ -111,7 +111,7 @@ func wholePhraseOccursInSearchTerm( _ phrase: inout String, searchTerm: inout St
 }
    
    
-   //*************************************************************************
+   // *************************************************************************
    func dispatchSegmentUpdates(_ segments: inout [ [String : [Statistic : Double]] ]) {
       //let computationQueue = dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)
       guard var rows = inputCSV?.rows else { return }

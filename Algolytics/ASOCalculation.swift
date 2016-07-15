@@ -34,6 +34,10 @@ class ASODescriptionObject {
       { print("\(each)\n") }
    }
    
+   // ******************************
+   var descriptions: [String]
+      { return _descriptions }
+   
    // assumes that we've already opened a file and imported
    // and that the input CSV is of data type ASO Description
    // *****************************************************
@@ -62,6 +66,7 @@ class ASODescriptionObject {
       var csvString = "Description\r"
       for description in _descriptions
          { csvString += description + "\r" }
+      csvString = csvString.trimmed
       
       let newCSV = CSV(string: csvString, loadColumns: false)
       return newCSV

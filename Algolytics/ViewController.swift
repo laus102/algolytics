@@ -94,7 +94,6 @@ class ViewController: NSViewController, NSUserNotificationCenterDelegate {
    //    care of in the outputFilePath
    //***********************************************************************
    func writeResultsToOuputCSV(_ outputFilePath: URL) {
-      print(computer!.statsUpdateCounter)
       let finalCSV = computer!.generateOuputCSV().data(using: String.Encoding.utf8)
       do {
          try finalCSV?.write(to: outputFilePath, options: NSData.WritingOptions.dataWritingAtomic)
