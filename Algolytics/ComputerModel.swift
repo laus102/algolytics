@@ -19,6 +19,8 @@ class ComputerModel: NSObject {
    var statsUpdateCounter = 0
    var parentVC: ViewController?
    
+   var asoDescriptionObject: ASODescriptionObject?
+   
    //                 keyword   statistic  (frequency)
    var searchTerms = [String : [Statistic : Double]]()  // unique phrase list
    var segments = [ [String : [Statistic : Double]] ]() // reduces memory-intensive computation
@@ -40,8 +42,23 @@ class ComputerModel: NSObject {
       
       outputCSV.remove(at: outputCSV.index(before: outputCSV.endIndex))
       outputCSV += "\n"
+      
+      if let inCSV = self.inputCSV {
+         if (isASODescription(inCSV.header)) {
+            asoDescriptionObject = ASODescriptionObject(inputCSV: inputCSV)
+            asoDescriptionObject?.cleanASODescription()
+            
+            asoDescriptionObject?.printDescriptions()
+            let newCSV = asoDescriptionObject!.csvEncoder()
+            self.inputCSV = asoDescriptionObject!.csvEncoder()
+         
+            print("Printing new csv rows")
+            for row in inputCSV!.rows {
+               print("\(row[dataSet!.searchTermKey()])")
+            }
+         }
+      }
    }
-   
    
    
    // This method computes the output
@@ -66,36 +83,36 @@ class ComputerModel: NSObject {
    
    // cleans the input CSV of any junk data
    //*******************************************************
-   func cleanCSV() {
-      var cleanedText: String = ""
-      let charsToBeRemoved = CharacterSet.alphanumerics.inverted
-      
-      if isASODescription(inputCSV!.header) {
+//   func cleanCSV() {
+//      var cleanedText: String = ""
+//      let charsToBeRemoved = CharacterSet.alphanumerics.inverted
+//      
+//      if isASODescription(inputCSV!.header) {
+////         for row in inputCSV!.rows {
+////              let literal = row
+////             clean ASO style
+////         }
+//         
+//      }
+//         
+//      else { // PPC, SEO, or ASOKeywords
 //         for row in inputCSV!.rows {
-//              let literal = row
-//             clean ASO style
+//            let searchTerm: String = row[dataSet!.searchTermKey()]!
+//            if searchTerm.containsNoAlphaNumericCharacters()
+//               { print("non alphanumeric searchTerm: \(searchTerm)")
+//                  continue} // if the original term has no AlphNum, we can immediately discard
+//            let alphaNumLiteral = searchTerm.components(separatedBy: charsToBeRemoved).joined(separator: " ")
+//            cleanedText += alphaNumLiteral + "," // add the cleaned search term
+//            
+//            let statsArray = dataSet!.inputStats()
+//            for inputStat in statsArray
+//               { cleanedText += row[inputStat.stringValue]! + "," } // add each inputstat's "cellValue,"
+//            cleanedText.remove(at: cleanedText.index(before: cleanedText.endIndex)) //remove the very last comma
+//            cleanedText += "\n"
 //         }
-         
-      }
-         
-      else { // PPC, SEO, or ASOKeywords
-         for row in inputCSV!.rows {
-            let searchTerm: String = row[dataSet!.searchTermKey()]!
-            if searchTerm.containsNoAlphaNumericCharacters()
-               { print("non alphanumeric searchTerm: \(searchTerm)")
-                  continue} // if the original term has no AlphNum, we can immediately discard
-            let alphaNumLiteral = searchTerm.components(separatedBy: charsToBeRemoved).joined(separator: " ")
-            cleanedText += alphaNumLiteral + "," // add the cleaned search term
-            
-            let statsArray = dataSet!.inputStats()
-            for inputStat in statsArray
-               { cleanedText += row[inputStat.stringValue]! + "," } // add each inputstat's "cellValue,"
-            cleanedText.remove(at: cleanedText.index(before: cleanedText.endIndex)) //remove the very last comma
-            cleanedText += "\n"
-         }
-      }
-      inputCSV! = CSV(string: cleanedText, delimiter: " ", loadColumns: true)
-   }
+//      }
+//      inputCSV! = CSV(string: cleanedText, delimiter: " ", loadColumns: true)
+//   }
    
    // searchTerm   statistic   statvalue
    // searchTerms ... [String : [Statistic : Double]]

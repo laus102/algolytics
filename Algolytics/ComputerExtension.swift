@@ -9,6 +9,7 @@
 
 
 import Foundation
+import SwiftCSV
 
 enum Progress {
    case loading
@@ -37,6 +38,7 @@ var updateStatisticQueue = DispatchQueue(label: "com.inicipia.algolytics.fuck", 
 
 extension ComputerModel {
    
+   //************************************************************************
    func splitPhraseList () -> ([ [String : [Statistic : Double]] ]) {
       let uniquePhrases = self.searchTerms
       let numUniquePhrases = Double(uniquePhrases.count)
@@ -154,9 +156,6 @@ func wholePhraseOccursInSearchTerm( _ phrase: inout String, searchTerm: inout St
                   print("searchTerm: \(searchTerm.key)")
                   print("segment[searchTerm.key]: \(segment[searchTerm.key])")
                   print("segmentCounter: \(segmentCounter)\n\n")
-                  for each in segment {
-                     print(each.)
-                  }
                }
             }
             segmentCounter += 1

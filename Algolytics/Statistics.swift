@@ -37,6 +37,7 @@ let kSearchScore = "Search Score"
 let kChance = "Chance"
 let kTotalApps = "Total Apps"
 let kCurrentRanks = "Current Ranks"
+let kDescription = "Description"
 
 let kFrequency = "Frequency"
 let kEmptyString = ""
@@ -174,10 +175,9 @@ class ASODescription: GenericDataSet {
    func generatePhrases(_ literal: String) -> [String]
       { return generateASODescriptionPhrases(literal) }
    func searchTermKey() -> String
-      { return kEmptyString }
+      { return kDescription }
 
 }
-
 
 
 func isPPC(_ inHeader: [String]) -> Bool {
@@ -220,4 +220,35 @@ func factoryData(_ header: [String]) -> GenericDataSet? {
    else if isASODescription(header) { return ASODescription() }
    else { print("error matching stat type")
          return nil }
+}
+
+// a smart phrase generator..
+// assumes a non-empty literal input (some rows in the input CSV will be empty..check before calling this func)
+// analyzes an app's store description and generates smart phrases
+// 'smart phrase' ex:
+//
+//  "Be prepared. Know Before™. Download the best weather app for free!”
+//
+//  We care about "best weather app" ... not "Be prepared. Know Before™. Download the"
+//
+//  Accounts for oddball non-ASCII characters in the description
+//
+func generateASODescriptionPhrases(_ literal: String) -> [String] {
+   // takes a phrase in, removes all non AlphaN characters, separates the resulting string into separate indv. words
+   
+   let charsToBeRemoved = CharacterSet.alphanumerics.inverted
+   let alphaNumLiteral = literal.components(separatedBy: charsToBeRemoved).joined(separator: " ")
+   let phrase = alphaNumLiteral.components(separatedBy: " ")
+   var newTerms: [String] = []
+   var tempString = ""
+   
+   for i in 0 ..< phrase.count { // for each word "i" in original literal "phrase"
+      for j in i ..< phrase.count { // start at word "i" and increment through the remaining words
+         tempString += "\(phrase[j]) "       // at each iteration, add the new word "j" to the temp string
+         newTerms.append(tempString.trimmingCharacters(
+            in: CharacterSet.whitespacesAndNewlines))  // add this new permutation to the array of generated phrases
+      }
+      tempString = "" // reset the temp String after generating terms for each iteration of word "i"
+   }
+   return newTerms
 }

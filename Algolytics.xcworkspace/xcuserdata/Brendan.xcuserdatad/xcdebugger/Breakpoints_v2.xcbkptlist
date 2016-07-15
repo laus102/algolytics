@@ -22,11 +22,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Algolytics/ComputerModel.swift"
-            timestampString = "489016124.094973"
+            timestampString = "490304521.101468"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "218"
-            endingLineNumber = "218"
+            startingLineNumber = "235"
+            endingLineNumber = "235"
             landmarkName = "updateStatistic(_:phrase:rowValue:dict:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -34,47 +34,47 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Algolytics/ViewController.swift"
-            timestampString = "489009631.054382"
+            filePath = "Algolytics/ASOCalculation.swift"
+            timestampString = "490227054.037863"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "142"
-            endingLineNumber = "142"
-            landmarkName = "algolyticizeDidPress(_:)"
+            startingLineNumber = "15"
+            endingLineNumber = "15"
+            landmarkName = "init(inputCSV:)"
             landmarkType = "7">
             <Locations>
                <Location
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "Algolytics.ViewController.algolyticizeDidPress (Swift.AnyObject) -&gt; ()"
+                  symbolName = "Algolytics.ASODescriptionObject.init (inputCSV : Swift.Optional&lt;SwiftCSV.CSV&gt;) -&gt; Algolytics.ASODescriptionObject"
                   moduleName = "Algolytics"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Brendan/Documents/Programming/OSX/Algolytics/Algolytics/Algolytics/ViewController.swift"
-                  timestampString = "489016049.944686"
+                  urlString = "file:///Users/Brendan/Documents/Programming/OSX/Algolytics/Algolytics/Algolytics/ASOCalculation.swift"
+                  timestampString = "490294526.850198"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "142"
-                  endingLineNumber = "142"
-                  offsetFromSymbolStart = "19">
+                  startingLineNumber = "13"
+                  endingLineNumber = "13"
+                  offsetFromSymbolStart = "15">
                </Location>
                <Location
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "Algolytics.ViewController.(algolyticizeDidPress (Swift.AnyObject) -&gt; ()).(closure #1)"
+                  symbolName = "Algolytics.ASODescriptionObject.__allocating_init (inputCSV : Swift.Optional&lt;SwiftCSV.CSV&gt;) -&gt; Algolytics.ASODescriptionObject"
                   moduleName = "Algolytics"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Brendan/Documents/Programming/OSX/Algolytics/Algolytics/Algolytics/ViewController.swift"
-                  timestampString = "489016049.946792"
+                  urlString = "file:///Users/Brendan/Documents/Programming/OSX/Algolytics/Algolytics/Algolytics/ASOCalculation.swift"
+                  timestampString = "490294526.85316"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "143"
-                  endingLineNumber = "143"
-                  offsetFromSymbolStart = "19">
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "4">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -85,12 +85,44 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Algolytics/ComputerModel.swift"
-            timestampString = "489009783.901877"
+            filePath = "Algolytics/ASOCalculation.swift"
+            timestampString = "490304506.212624"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "31"
-            endingLineNumber = "31"
+            startingLineNumber = "66"
+            endingLineNumber = "66"
+            landmarkName = "csvEncoder()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Pods/SwiftCSV/SwiftCSV/CSV.swift"
+            timestampString = "490304890.015966"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "36"
+            endingLineNumber = "36"
+            landmarkName = "init(string:delimiter:loadColumns:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Algolytics/ComputerModel.swift"
+            timestampString = "490305280.298955"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "51"
+            endingLineNumber = "51"
             landmarkName = "init(inputCSV:viewController:)"
             landmarkType = "7">
          </BreakpointContent>

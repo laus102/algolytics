@@ -7,36 +7,65 @@
 //
 
 import Foundation
+import SwiftCSV
 
-
-
-// a smart phrase generator..
-// assumes a non-empty literal input (some rows in the input CSV will be empty..check before calling this func)
-// analyzes an app's store description and generates smart phrases
-// 'smart phrase' ex: 
-//
-//  "Be prepared. Know Before™. Download the best weather app for free!”
-//
-//  We care about "best weather app" ... not "Be prepared. Know Before™. Download the"
-//
-//  Accounts for oddball non-ASCII characters in the description
-//
-func generateASODescriptionPhrases(_ literal: String) -> [String] {
-   // takes a phrase in, removes all non AlphaN characters, separates the resulting string into separate indv. words
+class ASODescriptionObject {
+   private var _descriptions =  [String]()
    
-   let charsToBeRemoved = CharacterSet.alphanumerics.inverted
-   let alphaNumLiteral = literal.components(separatedBy: charsToBeRemoved).joined(separator: " ")
-   let phrase = alphaNumLiteral.components(separatedBy: " ")
-   var newTerms: [String] = []
-   var tempString = ""
-   
-   for i in 0 ..< phrase.count { // for each word "i" in original literal "phrase"
-      for j in i ..< phrase.count { // start at word "i" and increment through the remaining words
-         tempString += "\(phrase[j]) "       // at each iteration, add the new word "j" to the temp string
-         newTerms.append(tempString.trimmingCharacters(
-            in: CharacterSet.whitespacesAndNewlines))  // add this new permutation to the array of generated phrases
+   init(inputCSV: CSV?) {
+      if let inCSV = inputCSV {
+         let searchTermKey = inCSV.header[0] // dict key for the descriptions, (known to SwiftCSV as the header)
+         
+         _descriptions.append(searchTermKey) // add the very first description
+         for row in inCSV.rows {
+            if let thisDescription = row[searchTermKey] {
+               if (thisDescription == "")
+                  { continue }
+               else
+                  { _descriptions.append(thisDescription) }
+            }
+         }
       }
-      tempString = "" // reset the temp String after generating terms for each iteration of word "i"
    }
-   return newTerms
+   
+   // ******************************
+   func printDescriptions() -> () {
+      for each in _descriptions
+      { print("\(each)\n") }
+   }
+   
+   // assumes that we've already opened a file and imported
+   // and that the input CSV is of data type ASO Description
+   // *****************************************************
+   func cleanASODescription() -> () {
+      var newDescriptions = [String]()
+      var newDescription = ""
+      
+      for description in _descriptions {  // for each description
+         let separatedWords = description.components(separatedBy: " ") //separated into individual words
+         
+         for word in separatedWords { // clean each word
+            let newWord = word.removeSpecialCharsFromString(text: word).lowercased()
+            newDescription += newWord + " " // add to original description
+         }
+         
+         newDescription = newDescription.trimmed // trim trailing white space
+         newDescriptions.append(newDescription)
+         newDescription = ""
+      }
+      _descriptions = newDescriptions
+   }
+   
+   // *******************************************************
+   // just returns a CSV object given an ASODescriptionObject
+   func csvEncoder() -> CSV? {
+      var csvString = "Description\r"
+      for description in _descriptions
+         { csvString += description + "\r" }
+      
+      let newCSV = CSV(string: csvString, loadColumns: false)
+      return newCSV
+   }
 }
+
+
