@@ -118,12 +118,20 @@ extension GenericDataSet {
    
    func generatePhrases(_ literal: String) -> [String] {
       let phrase = literal.components(separatedBy: " ")
+      var newPhrase = [String]()
+      for word in phrase {
+         let newWord = word.trimmingCharacters(in: CharacterSet.whitespaces)
+         if newWord != "" {
+            newPhrase.append(newWord)
+         }
+      }
+      
       var newTerms: [String] = []
       var tempString = ""
       
-      for i in 0 ..< phrase.count { // for each word "i" in original literal "phrase"
-         for j in i ..< phrase.count { // start at word "i" and increment through the remaining words
-            tempString += "\(phrase[j]) "       // at each iteration, add the new word "j" to the temp string
+      for i in 0 ..< newPhrase.count { // for each word "i" in original literal "phrase"
+         for j in i ..< newPhrase.count { // start at word "i" and increment through the remaining words
+            tempString += "\(newPhrase[j]) "       // at each iteration, add the new word "j" to the temp string
             newTerms.append(tempString.trimmingCharacters(
                in: kWhitespaceAndNewlineCharacterSet))   // add this new permutation to the array of generated phrases
          }

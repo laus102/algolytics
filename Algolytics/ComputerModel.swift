@@ -129,7 +129,7 @@ class ComputerModel: NSObject {
        }
    }
    
-   // goes through all of the aggregated unique phrases of this particular queue (approx. 1459 values)
+   // goes through all of the aggregated unique phrases of this particular queue
    // looks in each row of the input CSV
    //       if this unique phrase exists within the row's searchTerm
    //                aggregate the appropriate statistic for the dataSet
