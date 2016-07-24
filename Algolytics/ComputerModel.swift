@@ -59,13 +59,18 @@ class ComputerModel: NSObject {
       let isASODescription = self.dataSet?.searchTermKey() == "Description"
       
       if isASODescription { // if we are dealing with ASO Description
-         guard let descriptions = asoDescriptionObject?.descriptions else { return }
-         for description in descriptions {
-            let generatedPhrases = dataSet!.generatePhrases(description)
-            updateSearchTerms(generatedPhrases)
+         if let isASOPerm = asoDescriptionObject?.isPermutationType where isASOPerm {
+            
          }
-         parentVC!.display(Progress.complete)
-         return // if ASO Description Dataset, we are done here, as we only need frequency data
+         else {
+            guard let descriptions = asoDescriptionObject?.descriptions else { return }
+            for description in descriptions {
+               let generatedPhrases = dataSet!.generatePhrases(description)
+               updateSearchTerms(generatedPhrases)
+            }
+            parentVC!.display(Progress.complete)
+            return // if ASO Description Dataset, we are done here, as we only need frequency data
+         }
       }
       
       guard let rows = inputCSV?.rows else { return }
