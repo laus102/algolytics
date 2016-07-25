@@ -106,12 +106,17 @@ class ASODescriptionObject {
    }
    
    // *******************************************************
-   func generateASOPermutationPhrases() -> [String : [Statistic : Double]] {
-      if let titleWords = _appTitleWords {
-         for titleWord in titleWords {
-            
-         }
+   func generateASOPermutationPhrases() -> [String : [Statistic : Double]]? {
+      if let titleWords = _appTitleWords , let keyWords = _keywords {
+         var newDict = [String : [Statistic : Double]]()
+         var newStack = Stack<String>()
+         newStack.items = titleWords + keyWords
+         var perms = [String]()
+         for i in 1...3 { perms += generatePermutations(ofPermLength: i, stack: newStack) }
+         for perm in perms { newDict[perm] =  [:] }
+         return newDict
       }
+      return nil
    }
    
    // *******************************************************

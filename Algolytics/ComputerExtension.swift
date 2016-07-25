@@ -162,5 +162,14 @@ func wholePhraseOccursInSearchTerm( _ phrase: inout String, searchTerm: inout St
          }
       }
    }
+   
+   //*************************************************************************
+   func asoPermutationsToSearchTermDict(permutations: [String]) -> [String : [Statistic : Double]] {
+      var newDict = [String : [Statistic : Double]]()
+      for permutation in permutations {
+         newDict[permutation] = [:]
+      }
+      return newDict
+   }
 }
 

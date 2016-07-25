@@ -22,11 +22,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Algolytics/ComputerModel.swift"
-            timestampString = "490555687.631613"
+            timestampString = "491163637.588968"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "200"
-            endingLineNumber = "200"
+            startingLineNumber = "205"
+            endingLineNumber = "205"
             landmarkName = "ComputerModel"
             landmarkType = "3">
          </BreakpointContent>
@@ -92,6 +92,22 @@
             startingLineNumber = "36"
             endingLineNumber = "36"
             landmarkName = "init(string:delimiter:loadColumns:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Algolytics/ComputerModel.swift"
+            timestampString = "491163760.755927"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "65"
+            endingLineNumber = "65"
+            landmarkName = "compute()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

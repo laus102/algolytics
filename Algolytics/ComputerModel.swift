@@ -60,7 +60,11 @@ class ComputerModel: NSObject {
       
       if isASODescription { // if we are dealing with ASO Description
          if let isASOPerm = asoDescriptionObject?.isPermutationType where isASOPerm {
-            
+            if let asoPermutations = asoDescriptionObject?.generateASOPermutationPhrases() {
+               searchTerms = asoPermutations
+               parentVC!.display(Progress.complete)
+               return // if ASO Permutation Dataset, we only needed generated phrases, stop here
+            }
          }
          else {
             guard let descriptions = asoDescriptionObject?.descriptions else { return }
@@ -91,7 +95,8 @@ class ComputerModel: NSObject {
       for searchTerm in searchTerms {
          outputCSV += "\(searchTerm.key),"
          for stat in dataSet!.stats() {
-            outputCSV += "\(searchTerm.value[stat]!),"
+            if let value = searchTerm.value[stat]
+               { outputCSV += "\(value)," }
          }
          outputCSV = String(outputCSV.characters.dropLast()) + "\n"
       }
