@@ -90,7 +90,12 @@ class ASODescriptionObject {
       if let appTitleWords = _appTitleWords {
          for titleWord in appTitleWords {
             let newTitleWord = titleWord.removeSpecialCharsFromString(text: titleWord).lowercased()
-            newAppTitleWords.append(newTitleWord)
+            if newTitleWord.range(of: " ") != nil {
+               let array = newTitleWord.words
+               for each in array
+                  { newAppTitleWords.append(each) }
+            }
+            else { newAppTitleWords.append(newTitleWord) }
          }
       } else { return }
       

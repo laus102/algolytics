@@ -29,9 +29,12 @@ extension String
 //   }
    
    func removeSpecialCharsFromString(text: String) -> String {
+      var newString = ""
       let okayChars : Set<Character> =
-         Set("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLKMNOPQRSTUVWXYZ1234567890".characters)
-      return String(text.characters.filter {okayChars.contains($0) })
+         Set("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLKMNOPQRSTUVWXYZ1234567890-".characters)
+      newString = String(text.characters.filter {okayChars.contains($0) })
+      newString = newString.replacingOccurrences(of: "-", with: " ")
+      return newString
    }
    
    func containsNoAlphaNumericCharacters() -> Bool {

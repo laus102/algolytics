@@ -42,7 +42,6 @@ extension ComputerModel {
    func splitPhraseList () -> ([ [String : [Statistic : Double]] ]) {
       let uniquePhrases = self.searchTerms
       let numUniquePhrases = Double(uniquePhrases.count)
-//      let numberOfQueues = ceil(numUniquePhrases / 1500.0)
       let numberOfSegments = ceil(numUniquePhrases / 3000.0)
       let numberOfPhrasesPerSegment = floor(numUniquePhrases/numberOfSegments)
       var phraseCounter: Int = 0
@@ -73,8 +72,8 @@ extension ComputerModel {
 //*******************************************************
    
 func wholePhraseOccursInSearchTerm( _ phrase: inout String, searchTerm: inout String) -> Bool {
-   let separatedSearchTerm: [String] = searchTerm.characters.split(separator: " ").map { String($0) } //searchTerm.componentsSeparatedByString(" ")
-   let separatedPhrase: [String] = phrase.characters.split(separator: " ").map { String($0) }// phrase.componentsSeparatedByString(" ")
+   let separatedSearchTerm: [String] = searchTerm.characters.split(separator: " ").map { String($0) }
+   let separatedPhrase: [String] = phrase.characters.split(separator: " ").map { String($0) }
    
    let separatedPhraseCount = separatedPhrase.count
    let separatedSearchTermCount = separatedSearchTerm.count
